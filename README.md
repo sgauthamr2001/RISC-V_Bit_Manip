@@ -49,3 +49,9 @@ $ make clean_build
 	$ sudo apt update
 	$ sudo apt install gtkwave
 ```    
+
+### Evaluation Criteria:
+- Design code (bsv) has to be documented with proper comments and design intent
+- Every team member should check-in their code contribution using their own GitLab id for individual evaluation
+- Verification code (python) has to be documented with proper comments providing the test case explanation
+- A final Report.md should be updated providing the steps to run the tests and the instructions implemented along with test run report.
