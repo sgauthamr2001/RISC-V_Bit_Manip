@@ -12,3 +12,17 @@ Details: Has the macros used for instruction comparison
 // case statement for understandability and easy modifications.
 
 `define ANDN 'b1
+//`define BCLR 32'b0100100xxxxxxxxxx001xxxxx0110011
+//`define BCLRI 32'b001001xxxxxxxxxxx001xxxxx0010011
+`define BCLR 2
+`define BCLRI 3
+`define BEXT 5
+`define BEXTI 6
+`define BINV 7
+`define BINVI 8
+`define BSET 9
+`define BSETI 10
+`define SEXTB 33
+`define SEXTH 34
+`define XNOR 42
+`define ZEXTH 43

@@ -15,7 +15,7 @@ import bbox_types :: *;
 //`include "Zba.bsv"
 `include "Zbb.bsv"
 //`include "Zbc.bsv"
-//`include "Zbs.bsv"
+`include "Zbs.bsv"
 /*********************/
 
 
@@ -36,6 +36,55 @@ function BBoxOutput fn_compute(BBoxInput inp);
   case(inp.instr) matches
     `ANDN: begin
       result = fn_andn(inp.rs1, inp.rs2);
+      valid = True;
+    end
+    `BCLR: begin
+      result = fn_bclr(inp.rs1, inp.rs2);
+      valid = True;
+    end
+    `BCLRI: begin
+      //shamt[5] = 1 reservation to be made later
+      result = fn_bclri(inp.rs1, inp.instr);
+      valid = True;
+    end
+    `BEXT: begin
+      result = fn_bext(inp.rs1, inp.rs2);
+      valid = True;
+    end
+    `BEXTI: begin
+      result = fn_bexti(inp.rs1, inp.instr);
+      valid = True;
+    end
+    `BINV : begin
+      result = fn_binv(inp.rs1, inp.rs2);
+      valid = True;
+    end
+    `BINVI : begin
+      result = fn_binvi(inp.rs1, inp.instr);
+      valid = True;
+    end
+    `BSET : begin
+      result = fn_bset(inp.rs1, inp.rs2);
+      valid = True;
+    end
+    `BSETI : begin
+      result = fn_bseti(inp.rs1, inp.instr);
+      valid = True;
+    end
+    `SEXTB : begin
+      result = fn_sextb(inp.rs1);
+      valid = True;
+    end
+    `SEXTH : begin
+      result = fn_sexth(inp.rs1);
+      valid = True;
+    end
+    `XNOR : begin
+      result = fn_xnor(inp.rs1,inp.rs2);
+      valid = True;
+    end
+    `ZEXTH : begin
+      result = fn_zexth(inp.rs1);
       valid = True;
     end
     default: begin
