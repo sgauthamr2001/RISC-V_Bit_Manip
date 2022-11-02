@@ -11,4 +11,23 @@ Details: Has the macros used for instruction comparison
 // Add instruction macors here which can be used in the 
 // case statement for understandability and easy modifications.
 
-`define ANDN 'b1
+`define ANDN 32'd1
+`define CLZ 32'd14
+`define CLZW 32'd15
+`define CPOP 32'd16
+`define CPOPW 32'd17
+`define CTZ 32'd18
+`define CTZW 32'd19 
+`define MAX 32'd20 
+`define MAXU 32'd21
+`define MIN 32'd22
+`define MINU 32'd23
+`define ORCB 32'd24
+`define ORN 32'd25
+`define REV8 32'd26 
+`define ROL 32'd27
+`define ROLW 32'd28
+`define ROR 32'd29 
+`define RORI 32'd30
+`define RORIW 32'd31
+`define RORW 32'd32
