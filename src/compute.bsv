@@ -14,7 +14,7 @@ Details: The top function which calls the required function depending
 import bbox_types :: *;
 `include "Zba.bsv"
 `include "Zbb.bsv"
-//`include "Zbc.bsv"
+`include "Zbc.bsv"
 `include "Zbs.bsv"
 /*********************/
 

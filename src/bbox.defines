@@ -97,12 +97,3 @@ Details: Has the macros used for instruction comparison
 `define XNOR  32'b0100000??????????100?????0110011
 // 2.43*
 `define ZEXTH 32'b000010000000?????100?????011?011
-
-
-
-`define BSET 9
-`define BSETI 10
-`define SEXTB 33
-`define SEXTH 34
-`define XNOR 42
-`define ZEXTH 43
