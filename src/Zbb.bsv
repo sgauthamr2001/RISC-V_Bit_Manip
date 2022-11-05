@@ -115,7 +115,7 @@ function Bit#(XLEN) fn_ror(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
   return result; 
 endfunction
 
-function Bit#(XLEN) fn_rori(Bit#(32) instr, Bit#(XLEN) rs1);
+function Bit#(XLEN) fn_rori(Bit#(XLEN) rs1, Bit#(32) instr);
   Bit#(XLEN) result;
   UInt#(8) shamt; 
   if(valueOf(XLEN) == 32)
@@ -127,7 +127,7 @@ function Bit#(XLEN) fn_rori(Bit#(32) instr, Bit#(XLEN) rs1);
 endfunction
 
 `ifdef RV64 
-  function Bit#(XLEN) fn_roriw(Bit#(32) instr, Bit#(XLEN) rs1);
+  function Bit#(XLEN) fn_roriw(Bit#(XLEN) rs1, Bit#(32) instr);
     Bit#(XLEN) result;
     UInt#(6) shamt = unpack(zeroExtend(instr[24:20])); 
     Bit#(32) op1 = rs1[31:0]; 
@@ -143,10 +143,6 @@ endfunction
     return result;
   endfunction
 `endif 
-
-function Bit#(XLEN) fn_andn(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
-  return rs1 & ~rs2;
-endfunction
 
 function Bit#(XLEN) fn_sextb(Bit#(XLEN) rs1);
   return signExtend(rs1[7:0]);
