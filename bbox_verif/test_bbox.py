@@ -40,6 +40,103 @@ from cocotb.regression import TestFactory
 
 from bbox_ref_model import bbox_rm
 
+def func_gen(instr_name, shamt, base):
+    if instr_name == 'adduw':
+        instr = '0000100' + '00000' + '00000' + '000' + '00000' + '0111011'
+    elif instr_name == 'andn':
+        instr = '0100000' + '00000' + '00000' + '111' + '00000' + '0110011'
+    elif instr_name == 'bclr':
+        instr = '0100100' + '00000' + '00000' + '001' + '00000' + '0110011'
+    elif instr_name == 'bclri':
+        instr = '010010' + shamt + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'bext':
+        instr = '0100100' + '00000' + '00000' + '101' + '00000' + '0110011'
+    elif instr_name == 'bexti': 
+        instr = '010010' + shamt + '00000' + '101' + '00000' + '0010011'
+    elif instr_name == 'binv': 
+        instr = '0110100' + '00000' + '00000' + '001' + '00000' + '0110011'
+    elif instr_name == 'binvi':
+        instr = '011010' + shamt + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'bset':
+        instr = '0010100' + '00000' + '00000' + '001' + '00000' + '0110011'
+    elif instr_name == 'bseti': 
+        instr = '001010' + shamt + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'clmul':
+        instr = '0000101' + '00000' + '00000' + '001' + '00000' + '0110011'
+    elif instr_name == 'clmulh': 
+        instr = '0000101' + '00000' + '00000' + '011' + '00000' + '0110011'
+    elif instr_name == 'clmulr':
+        instr = '0000101' + '00000' + '00000' + '010' + '00000' + '0110011'
+    elif instr_name == 'clz': 
+        instr = '0110000' + '00000' + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'clzw': 
+        instr = '0110000' + '00000' + '00000' + '001' + '00000' + '0011011'
+    elif instr_name == 'cpop': 
+        instr = '0110000' + '00010' + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'cpopw':
+        instr = '0110000' + '00010' + '00000' + '001' + '00000' + '0011011'
+    elif instr_name == 'ctz': 
+        instr = '0110000' + '00001' + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'ctzw':
+        instr = '0110000' + '00001' + '00000' + '001' + '00000' + '0011011'
+    elif instr_name == 'max': 
+        instr = '0000101' + '00000' + '00000' + '110' + '00000' + '0110011'
+    elif instr_name == 'maxu':
+        instr = '0000101' + '00000' + '00000' + '111' + '00000' + '0110011'
+    elif instr_name == 'min':
+        instr = '0000101' + '00000' + '00000' + '100' + '00000' + '0110011'
+    elif instr_name == 'minu':
+        instr = '0000101' + '00000' + '00000' + '101' + '00000' + '0110011'
+    elif instr_name == 'orcb':
+        instr = '001010000111' + '00000' + '101' + '00000' + '0010011'
+    elif instr_name == 'orn':
+        instr = '0100000' + '00000' + '00000' + '110' + '00000' + '0110011'
+    elif instr_name == 'rev8': 
+        if(base == 'RV32'): 
+            instr = '011010011000' + '00000' + '101' + '00000' + '0010011'
+        else:
+            instr = '011010111000' + '00000' + '101' + '00000' + '0010011'
+    elif instr_name == 'rol':
+        instr = '0110000' + '00000' + '00000' + '001' + '00000' + '0110011'
+    elif instr_name == 'rolw':
+        instr = '0110000' + '00000' + '00000' + '001' + '00000' + '0111011'
+    elif instr_name == 'ror':
+        instr = '0110000' + '00000' + '00000' + '101' + '00000' + '0110011'
+    elif instr_name == 'rori':
+        instr = '011000' + shamt + '00000' + '101' + '00000' + '0010011'
+    elif instr_name == 'roriw': 
+        instr = '0110000' + shamt + '00000' + '101' + '00000' + '0011011'
+    elif instr_name == 'rorw': 
+        instr = '0110000' + '00000' + '00000' + '101' + '00000' + '0111011'
+    elif instr_name == 'sextb': 
+        instr = '0110000' + '00100' + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'sexth':
+        instr = '0110000' + '00101' + '00000' + '001' + '00000' + '0010011'
+    elif instr_name == 'sh1add': 
+        instr = '0010000' + '00000' + '00000' + '010' + '00000' + '0110011'     
+    elif instr_name == 'sh1adduw': 
+        instr = '0010000' + '00000' + '00000' + '010' + '00000' + '0111011'
+    elif instr_name == 'sh2add': 
+        instr = '0010000' + '00000' + '00000' + '100' + '00000' + '0110011'
+    elif instr_name == 'sh2adduw': 
+        instr = '0010000' + '00000' + '00000' + '100' + '00000' + '0111011'
+    elif instr_name == 'sh3add': 
+        instr = '0010000' + '00000' + '00000' + '110' + '00000' + '0110011'
+    elif instr_name == 'sh3adduw':
+        instr = '0010000' + '00000' + '00000' + '110' + '00000' + '0111011'
+    elif instr_name == 'slliuw': 
+        instr = '000010' + shamt + '00000' + '001' + '00000' + '0011011'
+    elif instr_name == 'xnor': 
+        instr = '0100000' + '00000' + '00000' + '100' + '00000' + '0110011'
+    elif instr_name == 'zexth': 
+        instr = '0000100' + '00000' + '00000' + '100' + '00000' + '0111011'
+    else:
+        instr = '1111111' + '11111' + '11111' + '111' + '11111' + '1111111'
+        print("Please check the instruction.")
+
+    instr = int(instr, 2)
+    return instr 
+
 
 #generates clock and reset
 async def initial_setup(dut):
@@ -90,8 +187,11 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
     dut._log.info("------------- Test %r of RV%d starts --------------" %(instr_name,XLEN))
     dut._log.info("*******************************************************")
     for i in range (num_of_tests):
+        #rs1 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
+        #rs2 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
         rs1 = random.randint(0,(2**XLEN)-1) 
         rs2 = random.randint(0,(2**XLEN)-1)
+
         rm_result = bbox_rm(instr, rs1, rs2, XLEN)
     
         await input_driver(dut, instr, rs1, rs2, single_opd)
@@ -112,14 +212,14 @@ base = 'RV64'
 #generates tests for instructions of RV32
 if base == 'RV32':
     tf.add_option('XLEN', [32])
-    tf.add_option(('instr','instr_name','single_opd'), [(33, 'sextb', 0)])
+    tf.add_option(('instr','instr_name','single_opd'), [(1,'addn', 0)])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 
 #generates tests for instructions of RV64
 elif base == 'RV64':
     tf.add_option('XLEN', [64])
-    tf.add_option(('instr','instr_name','single_opd'), [(42, 'xnor', 0),(43,'zexth',0)])
+    tf.add_option(('instr','instr_name','single_opd'), [(1,'addn', 0)])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 
