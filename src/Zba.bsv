@@ -35,7 +35,7 @@ endfunction
 `endif
 
 `ifdef RV64 
-	function Bit#(XLEN) fn_slliuw(Bit#(32) instr ,Bit#(XLEN) rs1, Bit#(XLEN) rs2);
+	function Bit#(XLEN) fn_slliuw(Bit#(XLEN) rs1, Bit#(32) instr);
 	  return {32'b0,rs1[31:0]}<<instr[25:20];
 	endfunction
 `endif
