@@ -24,8 +24,12 @@ def sign_extend(value, bits):
 
 #Reference model
 def bbox_rm(instr, rs1, rs2, XLEN):
-    
+    print(type(instr),type(rs1),type(rs2))
     if instr == 1:
+        res = rs2 + (rs1&(2**32 - 1))
+        valid = '1'
+    
+    elif instr == 2:
         res = rs1 & ~rs2
         valid = '1'
 
@@ -171,7 +175,13 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         res = sign_extend(res, 32)
         valid = '1'
 
+    elif instr == 42:
+        res = 2**(XLEN) - 1 - (rs1 ^ rs2)
+        valid = '1'
 
+    elif instr == 43:
+        res = rs1 % (2**16)
+        valid = '1'
     ## logic for all other instr ends
     else:
         res = 0
