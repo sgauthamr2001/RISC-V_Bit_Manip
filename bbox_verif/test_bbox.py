@@ -112,14 +112,14 @@ base = 'RV64'
 #generates tests for instructions of RV32
 if base == 'RV32':
     tf.add_option('XLEN', [32])
-    tf.add_option(('instr','instr_name','single_opd'), [(2, 'addn', 0),(35,'sh1add',0),(37,'sh2add',0),(39,'sh3add',0),(11,'clmul',0)])
+    tf.add_option(('instr','instr_name','single_opd'), [(33, 'sextb', 0)])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 
 #generates tests for instructions of RV64
 elif base == 'RV64':
     tf.add_option('XLEN', [64])
-    tf.add_option(('instr','instr_name','single_opd'), [(1,'adduw',0),(2, 'addn', 0),(35,'sh1add',0),(36,'sh1adduw',0),(37,'sh2add',0),(38,'sh2adduw',0),(39,'sh3add',0),(40,'sh3adduw',0),(11,'clmul',0)])
+    tf.add_option(('instr','instr_name','single_opd'), [(42, 'xnor', 0),(43,'zexth',0)])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 
