@@ -14,7 +14,7 @@ Details: The top function which calls the required function depending
 import bbox_types :: *;
 `include "Zba.bsv"
 `include "Zbb.bsv"
-//`include "Zbc.bsv"
+`include "Zbc.bsv"
 `include "Zbs.bsv"
 /*********************/
 
@@ -67,6 +67,10 @@ function BBoxOutput fn_compute(BBoxInput inp);
           result = fn_bclri(inp.rs1, inp.instr);
           valid = True;
         end
+        else begin
+          result = 0;
+          valid = 0;
+        end
       `endif
       `ifdef RV64
         result = fn_bclri(inp.rs1, inp.instr);
@@ -79,6 +83,10 @@ function BBoxOutput fn_compute(BBoxInput inp);
         if(inp.instr[25] == 1'b0) begin
           result = fn_bexti(inp.rs1, inp.instr);
           valid = True;
+        end
+        else begin
+          result = 0;
+          valid = False;
         end
       `endif
       `ifdef RV64
@@ -93,6 +101,10 @@ function BBoxOutput fn_compute(BBoxInput inp);
           result = fn_binvi(inp.rs1, inp.instr);
           valid = True;
         end
+        else begin
+          result = 0;
+          valid = 0;
+        end
       `endif
       `ifdef RV64
         result = fn_binvi(inp.rs1, inp.instr);
@@ -105,6 +117,10 @@ function BBoxOutput fn_compute(BBoxInput inp);
         if(inp.instr[25] == 1'b0) begin
           result = fn_bseti(inp.rs1, inp.instr);
           valid = True;
+        end
+        else begin
+          result = 0;
+          valid = 0;
         end
       `endif
       `ifdef RV64
@@ -184,7 +200,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
     end
 
     `ORCB : begin
-      result = fn_orcb(inp.rs1, inp.rs2);
+      result = fn_orcb(inp.rs1);
       valid = True;
     end
 
@@ -205,6 +221,10 @@ function BBoxOutput fn_compute(BBoxInput inp);
           result = fn_rev8(inp.rs1);
           valid = True;
         `endif
+      end
+      else begin
+        result = 0;
+        valid = False;
       end
     end
 
@@ -230,6 +250,10 @@ function BBoxOutput fn_compute(BBoxInput inp);
         if(inp.instr[25] == 1'b0) begin
           result = fn_rori(inp.rs1, inp.instr);
           valid = True;
+        end
+        else begin
+          result = 0;
+          valid = 0;
         end
       `endif
       `ifdef RV64
