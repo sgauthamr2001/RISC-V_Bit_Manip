@@ -25,70 +25,121 @@ def sign_extend(value, bits):
 #Reference model
 def bbox_rm(instr, rs1, rs2, XLEN):
 
-    if instr == 1:
+    istr = bindigits(instr, 32)
+    istr = istr[::-1]
+
+    ip1 = istr[31:24]
+    ip2 = istr[24:19]
+    ip3 = istr[19:14]
+    ip4 = istr[14:11]
+    ip5 = istr[11:7]
+    ip6 = istr[6:]
+
+    # adduw
+    if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0110011')):
         res = rs2 + (rs1&(2**32 - 1))
         valid = '1'
     
-    elif instr == 2:
+    # 2, andn
+    elif ((ip1 == '0100000') & (ip4 == '111') & (ip6 == '0110011')):
         res = rs1 & ~rs2
         valid = '1'
 
-    elif instr == 3:
+    # 3, blcr
+    elif ((ip1 == '0100100') & (ip4 == '001') & (ip6 == '0110011')):
         res = (rs1 & ~(1 << (rs2 & (XLEN - 1))))
         valid = '1'
 
-    elif instr == 4:
-        res = (rs1 & ~(1 << (instr[25:20] & (XLEN - 1))))
-        valid = '1'
+    # 4, bclri
+    elif ((ip1[:-1] == '000010') & (ip4 == '000') & (ip6 == '0110011')):
+        if(XLEN == 32 & ip1[-1] == 0):
+            shamt = int(ip2, 2)
+            res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
+            valid = '1'
+        if(XLEN == 64): 
+            shamt = int(ip1[-1] + ip2, 2)
+            res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
+            valid = '1'
 
-    elif instr == 5:
+    # 5, bext
+    elif ((ip1 == '0100100') & (ip4 == '101') & (ip6 == '0110011')):
         res = (rs1 >> (rs2 & (XLEN - 1))) & 1
         valid = '1'
     
-    elif instr == 6:
-        res = (rs1 >> (instr[25:20] & (XLEN - 1))) & 1
-        valid = '1'
+    # 6, bexti
+    elif ((ip1[:-1] == '010010') & (ip4 == '101') & (ip6 == '0010011')):
+        if(XLEN == 32 & ip1[-1] == 0):
+            shamt = int(ip2, 2)
+            res = (rs1 >> (shamt & (XLEN - 1))) & 1
+            valid = '1'
+        if(XLEN == 64): 
+            shamt = int(ip1[-1] + ip2, 2)
+            res = (rs1 >> (shamt & (XLEN - 1))) & 1
+            valid = '1'
 
-    elif instr == 7:
+    # 7, binv
+    elif ((ip1 == '0110100') & (ip4 == '001') & (ip6 == '0110011')):
         res = (rs1 ^ (1 << (rs2 & (XLEN - 1))))
         valid = '1'
 
-    elif instr == 8:
-        res = (rs1 ^ (1 << (instr[25:20] & (XLEN - 1))))
-        valid = '1'
+    # 8, binvi
+    elif ((ip1[:-1] == '011010') & (ip4 == '001') & (ip6 == '0010011')):
+        if(XLEN == 32 & ip1[-1] == 0):
+            shamt = int(ip2, 2)
+            res = (rs1 ^ (1 << (shamt & (XLEN - 1))))
+            valid = '1'
+        if(XLEN == 64):
+            shamt = int(ip1[-1] + ip2, 2)
+            res = (rs1 ^ (1 << (shamt & (XLEN - 1))))
+            valid = '1'
 
-    elif instr == 9:
+    # 9, bset
+    elif ((ip1 == '0010100') & (ip4 == '001') & (ip6 == '0110011')):
         res = (rs1 | (1 << (rs2 & (XLEN - 1))))
         valid = '1'
-
-    elif instr == 10:
-        res = (rs1 | (1 << (instr[25:20] & (XLEN - 1))))
-        valid = '1'
     
-    elif instr == 11:
+    # 10, bseti
+    elif ((ip1[:-1] == '001010') & (ip4 == '001') & (ip6 == '0010011')):
+        if(XLEN == 32 & ip1[-1] == 0):
+            shamt = int(ip2, 2)
+            res = (rs1 | (1 << (shamt & (XLEN - 1))))
+            valid = '1'
+        if(XLEN == 64):
+            shamt = int(ip1[-1] + ip2, 2)
+            res = (rs1 | (1 << (shamt & (XLEN - 1))))
+            valid = '1'
+    
+    # 11, clmul
+    elif ((ip1 == '0000101') & (ip4 == '001') & (ip6 == '0110011')):
         pass
 
-    elif instr == 12:
+    # 12, clmulh
+    elif ((ip1 == '0000101') & (ip4 == '011') & (ip6 == '0110011')):
         pass
 
-    elif instr == 13:
+    # 13, clmulr
+    elif ((ip1 == '0000101') & (ip4 == '010') & (ip6 == '0110011')):
         pass
 
-    elif instr == 14:
+    # 14, clz
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00000')):
         res = 0
         while ((rs1 & (1 << (XLEN - 1))) == 0):
             rs1 = (rs1 << 1)
             res += 1
         valid = '1'
 
-    elif instr  == 15: 
-        res = 0
-        while ((rs1 & (1 << 31)) == 0):
-            rs1 = (rs1 << 1)
-            res += 1
-        valid = '1'
+    # 15, clzw
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0011011') & (ip2 == '00000')):
+        if(XLEN == 64):
+            res = 0
+            while ((rs1 & (1 << 31)) == 0):
+                rs1 = (rs1 << 1)
+                res += 1
+            valid = '1'
 
-    elif instr == 16:
+    # 16, cpop
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00010')):    
         res = 0
         i = 0
         while(i < XLEN):
@@ -97,16 +148,20 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             rs1 = rs1 >> 1
         valid = '1'
     
-    elif instr == 17: 
-        res = 0 
-        i = 0
-        while(i < 32):
-            i += 1
-            if((rs1 & 1) == 1): res += 1      
-            rs1 = rs1 >> 1
-        valid = '1'
+    # 17, cpopw
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0011011') & (ip2 == '00010')): 
+        if(XLEN == 64):
+            res = 0 
+            i = 0
+            while(i < 32):
+                i += 1
+                if((rs1 & 1) == 1): res += 1      
+                rs1 = rs1 >> 1
+            valid = '1'
 
-    elif instr == 18: 
+    # 18, ctz
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00001')): 
+
         res = 0
         i = 0
         for i in range(XLEN):
@@ -115,44 +170,51 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             rs1 = rs1 >> 1     
         valid = '1'
 
-    elif instr == 19:
-        res = 0
-        i = 0
-        for i in range(32):
-            if((rs1 & 1) == 1): break
-            else: res += 1
-            rs1 = rs1 >> 1     
-        valid = '1'
+    # 19, ctzw
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0011011') & (ip2 == '00001')):
+        if(XLEN == 64):
+            res = 0
+            i = 0
+            for i in range(32):
+                if((rs1 & 1) == 1): break
+                else: res += 1
+                rs1 = rs1 >> 1     
+            valid = '1'
 
-    elif instr == 20: 
+    # 20, max 
+    elif ((ip1 == '0000101') & (ip4 == '110') & (ip6 == '0110011')):
         if(rs1 > rs2):
             res = rs1 
         else: 
             res = rs2 
         valid = '1'
-
-    elif instr == 21: 
+    
+    # 21, maxu
+    elif ((ip1 == '0000101') & (ip4 == '111') & (ip6 == '0110011')):
         if(rs1 > rs2):
             res = rs1 
         else: 
             res = rs2 
         valid = '1'
-
-    elif instr == 22: 
+    
+    # 22, min
+    elif ((ip1 == '0000101') & (ip4 == '100') & (ip6 == '0110011')):
         if(rs1 < rs2):
             res = rs1 
         else: 
             res = rs2 
         valid = '1'
 
-    elif instr == 23: 
+    # 23, minu
+    elif ((ip1 == '0000101') & (ip4 == '101') & (ip6 == '0110011')):
         if(rs1 < rs2):
             res = rs1 
         else: 
             res = rs2 
         valid = '1'
 
-    elif instr == 24: 
+    # 24, orcb
+    elif ((ip1 == '0010100') & (ip4 == '101') & (ip6 == '0010011') & (ip2 == '00111')):
         res = 0
         for i in range(int(XLEN/8)):
             if(rs1 & 255 != 0): 
@@ -160,19 +222,30 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             rs1 = rs1 >> 8
         valid = '1'
 
-    elif instr == 25: 
+    # 25, orn
+    elif ((ip1 == '0100000') & (ip4 == '110') & (ip6 == '0110011')):
         res = rs1 | ~rs2
         valid = '1'
-        
-    elif instr == 26: 
-        res = 0 
-        num_bytes = int(XLEN/8)
-        for i in range(num_bytes):
-            res += (rs1 & 255) << (8 * (num_bytes - i - 1))
-            rs1 = rs1 >> 8 
-        valid = '1'
 
-    elif instr == 27: 
+    # 26, rev8
+    elif ((ip1[:-1] == '011010') & (ip4 == '101') & (ip6 == '0010011') & (ip2 == '11000')): 
+        if(XLEN == 32 & ip1[-1] == 0): 
+            res = 0 
+            num_bytes = int(XLEN/8)
+            for i in range(num_bytes):
+                res += (rs1 & 255) << (8 * (num_bytes - i - 1))
+                rs1 = rs1 >> 8 
+            valid = '1'
+        if(XLEN == 64 & ip1[-1] == 1): 
+            res = 0 
+            num_bytes = int(XLEN/8)
+            for i in range(num_bytes):
+                res += (rs1 & 255) << (8 * (num_bytes - i - 1))
+                rs1 = rs1 >> 8 
+            valid = '1'
+
+    # 27, rol
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0110011')):
         res = 0 
         if(XLEN == 32): 
             shamt = rs2 & 31
@@ -182,15 +255,18 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         res = (rs1 << shamt) | ((rs1) >> (XLEN - shamt))
         valid = '1'
 
-    elif instr == 28: 
-        shamt = rs2 & 31
-        rs1 = rs1 & (4294967295)
-        res = (rs1 << shamt) | ((rs1) >> (32 - shamt))
-        res = res & (4294967295)
-        res = sign_extend(res, 32)
-        valid = '1'
+    # 28, rolw
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0111011')):
+        if(XLEN == 64):
+            shamt = rs2 & 31
+            rs1 = rs1 & (4294967295)
+            res = (rs1 << shamt) | ((rs1) >> (32 - shamt))
+            res = res & (4294967295)
+            res = sign_extend(res, 32)
+            valid = '1'
 
-    elif instr == 29: 
+    # 29, ror
+    elif ((ip1 == '0110000') & (ip4 == '101') & (ip6 == '0110011')): 
         res = 0 
         if(XLEN == 32): 
             shamt = rs2 & 31
@@ -200,21 +276,39 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         res = (rs1 >> shamt) | ((rs1) << (XLEN - shamt))
         valid = '1'
 
-    elif instr == 30: 
-        pass 
+    # 30, rori
+    elif  ((ip1 == '011000') & (ip4 == '101') & (ip6 == '0010011')): 
+        if(XLEN == 32 & ip1[-1] == 0):
+            shamt = int(ip2, 2)
+            res = (rs1 >> shamt) | ((rs1) << (XLEN - shamt))
+            valid = '1'
+        if(XLEN == 64):
+            shamt = int(ip1[-1] + ip2, 2)
+            res = (rs1 >> shamt) | ((rs1) << (XLEN - shamt))
+            valid = '1'
 
-    elif instr == 31: 
-        pass 
-    
-    elif instr == 32: 
-        shamt = rs2 & 31
-        rs1 = rs1 & (4294967295)
-        res = (rs1 >> shamt) | ((rs1) << (32 - shamt))
-        res = res & (4294967295)
-        res = sign_extend(res, 32)
-        valid = '1'
+    # 31, roriw
+    elif ((ip1 == '0110000') & (ip4 == '101') & (ip6 == '0011011')): 
+        if(XLEN == 64):
+            shamt = int(ip2, 2)
+            rs1 = rs1 & (4294967295)
+            res = (rs1 >> shamt) | ((rs1) << (32 - shamt))
+            res = res & (4294967295)
+            res = sign_extend(res, 32)
+            valid = '1'
 
-    elif instr == 33:
+    # 32, rorw
+    elif ((ip1 == '0110000') & (ip4 == '101') & (ip6 == '0111011')): 
+        if(XLEN == 64):
+            shamt = rs2 & 31
+            rs1 = rs1 & (4294967295)
+            res = (rs1 >> shamt) | ((rs1) << (32 - shamt))
+            res = res & (4294967295)
+            res = sign_extend(res, 32)
+            valid = '1'
+
+    # 33, sext.b 
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00100')):
         byteval = rs1 % 256
         if(byteval < 128):
             res = byteval
@@ -223,7 +317,8 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             res = (2**(XLEN) - 256) + byteval
             valid = '1'
 
-    elif instr == 34:
+    # 34, sext.h 
+    elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00101')):
         byteval = rs1 % (2**16)
         if(byteval < 2**15):
             res = byteval
@@ -231,38 +326,61 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         else:
             res = (2**(XLEN) - 2**16) + byteval
             valid = '1'
-    
-    elif instr == 35:
+
+
+    # 35, sh1add
+    elif ((ip1 == '0010000') & (ip4 == '010') & (ip6 == '0110011')): 
         res = (rs2 + rs1*2)&(2**64-1)
         valid = '1'
 
-    elif instr == 36:
-        res = (rs2 + (rs1&(2**32 - 1))*2)&(2**64-1)
-        valid = '1'
+    # 36, sh1add.uw 
+    elif ((ip1 == '0010000') & (ip4 == '010') & (ip6 == '0111011')): 
+        if(XLEN == 64):
+            res = (rs2 + (rs1&(2**32 - 1))*2)&(2**64-1)
+            valid = '1'
 
-    elif instr == 37:
+    # 37, sh2add 
+    elif ((ip1 == '0010000') & (ip4 == '100') & (ip6 == '0110011')): 
         res = (rs2 + rs1*4)&(2**64-1)
         valid = '1'
 
-    elif instr == 38:
-        res = (rs2 + (rs1&(2**32 - 1))*4)&(2**64-1)
-        valid = '1'
+    # 38, sh2add.uw 
+    elif ((ip1 == '0010000') & (ip4 == '100') & (ip6 == '0111011')): 
+        if(XLEN == 64):
+            res = (rs2 + (rs1&(2**32 - 1))*4)&(2**64-1)
+            valid = '1'
 
-    elif instr == 39:
+    # 39, sh3add
+    elif ((ip1 == '0010000') & (ip4 == '110') & (ip6 == '0110011')): 
         res = (rs2 + rs1*8)&(2**64-1)
         valid = '1'
 
-    elif instr == 40:
-        res = (rs2 + (rs1&(2**32 - 1))*8)&(2**64-1)
-        valid = '1'
+    # 40, sh3add.uw
+    elif ((ip1 == '0010000') & (ip4 == '110') & (ip6 == '0111011')): 
+        if(XLEN == 64):
+            res = (rs2 + (rs1&(2**32 - 1))*8)&(2**64-1)
+            valid = '1'
 
-    elif instr == 42:
+    # 41, slli.uw
+    elif ((ip1[:-1] == '000010') & (ip4 == '001') & (ip6 == '0011011')): 
+        if(XLEN == 64):
+            shamt = int(ip1[-1] + ip2, 2)
+            rs1 = rs1 & (4294967295)
+            rs1 = rs1 << shamt 
+
+    # 42, xnor
+    elif ((ip1 == '0100000') & (ip4 == '100') & (ip6 == '0110011')): 
         res = 2**(XLEN) - 1 - (rs1 ^ rs2)
         valid = '1'
 
-    elif instr == 43:
-        res = rs1 % (2**16)
-        valid = '1'
+    # 43, zext.h
+    elif ((ip1 == '0000100') & (ip4 == '100') & (ip2 == '00000')):
+        if(XLEN == 32 & ip6 == '0110011'):  
+            res = rs1 % (2**16)
+            valid = '1'
+        if(XLEN == 64 & ip6 == '0111011'):
+            res = rs1 % (2**16)
+            valid = '1'
 
     ## logic for all other instr ends
     else:
