@@ -11,4 +11,12 @@ Details: Has the macros used for instruction comparison
 // Add instruction macors here which can be used in the 
 // case statement for understandability and easy modifications.
 
-`define ANDN 'b1
+`define ADDUW 1
+`define ANDN 2
+`define SH1ADD 35
+`define SH1ADDUW 36
+`define SH2ADD 37
+`define SH2ADDUW 38
+`define SH3ADD 39
+`define SH3ADDUW 40
+`define CLMUL 11
