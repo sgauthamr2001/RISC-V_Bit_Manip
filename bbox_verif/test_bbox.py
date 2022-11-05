@@ -40,7 +40,7 @@ from cocotb.regression import TestFactory
 
 from bbox_ref_model import bbox_rm
 
-def func_gen(instr_name, shamt, base):
+def func_gen(instr_name, shamt='000000', base="RV32"):
     if instr_name == 'adduw':
         instr = '0000100' + '00000' + '00000' + '000' + '00000' + '0111011'
     elif instr_name == 'andn':
@@ -219,7 +219,7 @@ if base == 'RV32':
 #generates tests for instructions of RV64
 elif base == 'RV64':
     tf.add_option('XLEN', [64])
-    tf.add_option(('instr','instr_name','single_opd'), [(1,'addn', 0)])
+    tf.add_option(('instr','instr_name','single_opd'), [(func_gen('clmul'),'clmul', 0)])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 

@@ -26,14 +26,18 @@ def sign_extend(value, bits):
 def bbox_rm(instr, rs1, rs2, XLEN):
 
     istr = bindigits(instr, 32)
-    istr = istr[::-1]
+    #istr = istr[::-1]
 
-    ip1 = istr[31:24]
-    ip2 = istr[24:19]
-    ip3 = istr[19:14]
-    ip4 = istr[14:11]
-    ip5 = istr[11:7]
-    ip6 = istr[6:]
+    ip1 = istr[0:7]
+    ip2 = istr[7:12]
+    ip3 = istr[12:17]
+    ip4 = istr[17:20]
+    ip5 = istr[20:25]
+    ip6 = istr[25:32]
+
+    print("IP1: ",ip1)
+    print("IP4: ",ip4)
+    print("IP6: ",ip6)
 
     # adduw
     if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0110011')):
@@ -111,7 +115,13 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 11, clmul
     elif ((ip1 == '0000101') & (ip4 == '001') & (ip6 == '0110011')):
-        pass
+        res = 0
+        print("CLMUL Testing\n")
+        for i in range(XLEN+1):
+            cond = (rs2 // (2**i)) % 2
+            if(cond):
+                res = res ^ (rs1 * (2**i))
+        valid = '1'
 
     # 12, clmulh
     elif ((ip1 == '0000101') & (ip4 == '011') & (ip6 == '0110011')):
@@ -384,6 +394,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     ## logic for all other instr ends
     else:
+        print("Default Case\n")
         res = 0
         valid = '0'
 
