@@ -19,8 +19,41 @@ Note - if instr has single operand, take rs1 as an operand
 def bbox_rm(instr, rs1, rs2, XLEN):
     print(type(instr),type(rs1),type(rs2))
     if instr == 1:
+        res = rs2 + (rs1&(2**32 - 1))
+        valid = '1'
+    
+    elif instr == 2:
         res = rs1 & ~rs2
         valid = '1'
+    
+    elif instr == 35:
+        res = (rs2 + rs1*2)&(2**64-1)
+        valid = '1'
+
+    elif instr == 36:
+        res = (rs2 + (rs1&(2**32 - 1))*2)&(2**64-1)
+        valid = '1'
+
+    elif instr == 37:
+        res = (rs2 + rs1*4)&(2**64-1)
+        valid = '1'
+
+    elif instr == 38:
+        res = (rs2 + (rs1&(2**32 - 1))*4)&(2**64-1)
+        valid = '1'
+
+    elif instr == 39:
+        res = (rs2 + rs1*8)&(2**64-1)
+        valid = '1'
+
+    elif instr == 40:
+        res = (rs2 + (rs1&(2**32 - 1))*8)&(2**64-1)
+        valid = '1'
+
+    elif instr == 11:
+        res = (rs2*rs1)&(2**64-1)
+        valid = '1'
+    
     ## logic for all other instr starts 
 
     elif instr == 2:
