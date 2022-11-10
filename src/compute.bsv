@@ -62,24 +62,24 @@ function BBoxOutput fn_compute(BBoxInput inp);
     end
 
     `BCLRI: begin
-      `ifdef RV32
+      if(valueOf(XLEN) == 32) begin 
         if(inp.instr[25] == 1'b0) begin
           result = fn_bclri(inp.rs1, inp.instr);
           valid = True;
         end
         else begin
           result = 0;
-          valid = 0;
+          valid = False;
         end
-      `endif
-      `ifdef RV64
+      end 
+      if(valueOf(XLEN) == 64) begin 
         result = fn_bclri(inp.rs1, inp.instr);
         valid = True;
-      `endif
+      end 
     end
 
     `BEXTI: begin
-      `ifdef RV32
+      if(valueOf(XLEN) == 32) begin 
         if(inp.instr[25] == 1'b0) begin
           result = fn_bexti(inp.rs1, inp.instr);
           valid = True;
@@ -88,45 +88,45 @@ function BBoxOutput fn_compute(BBoxInput inp);
           result = 0;
           valid = False;
         end
-      `endif
-      `ifdef RV64
+      end 
+      if(valueOf(XLEN) == 64) begin    
         result = fn_bexti(inp.rs1, inp.instr);
         valid = True;
-      `endif
+      end 
     end
 
     `BINVI: begin
-      `ifdef RV32
+      if(valueOf(XLEN) == 32) begin 
         if(inp.instr[25] == 1'b0) begin
           result = fn_binvi(inp.rs1, inp.instr);
           valid = True;
         end
         else begin
           result = 0;
-          valid = 0;
+          valid = False;
         end
-      `endif
-      `ifdef RV64
+      end 
+      if(valueOf(XLEN) == 64) begin 
         result = fn_binvi(inp.rs1, inp.instr);
         valid = True;
-      `endif
+      end 
     end
 
     `BSETI: begin
-      `ifdef RV32
+      if(valueOf(XLEN) == 32) begin 
         if(inp.instr[25] == 1'b0) begin
           result = fn_bseti(inp.rs1, inp.instr);
           valid = True;
         end
         else begin
           result = 0;
-          valid = 0;
+          valid = False;
         end
-      `endif
-      `ifdef RV64
+      end
+      if(valueOf(XLEN) == 64) begin 
         result = fn_bseti(inp.rs1, inp.instr);
         valid = True;
-      `endif
+      end 
     end
 
     `CLMUL : begin
@@ -148,36 +148,36 @@ function BBoxOutput fn_compute(BBoxInput inp);
       valid = True;
     end
 
+    `ifdef RV64
     `CLZW : begin
-      `ifdef RV64
         result = fn_clzw(inp.rs1);
         valid = True;
-      `endif
     end
+    `endif
 
     `CPOP : begin
       result = fn_cpop(inp.rs1);
       valid = True;
     end
 
+    `ifdef RV64
     `CPOPW : begin
-      `ifdef RV64
         result = fn_cpopw(inp.rs1);
         valid = True;
-      `endif
     end
+    `endif
 
     `CTZ : begin
       result = fn_ctz(inp.rs1);
       valid = True;
     end
 
+    `ifdef RV64
     `CTZW : begin
-      `ifdef RV64
         result = fn_ctzw(inp.rs1);
         valid = True;
-      `endif
     end
+    `endif
 
     `MAX : begin
       result = fn_max(inp.rs1, inp.rs2);
@@ -211,16 +211,24 @@ function BBoxOutput fn_compute(BBoxInput inp);
 
     `REV8: begin
       if(inp.instr[25] == 0) begin
-        `ifdef RV32
+        if(valueOf(XLEN) == 32) begin 
           result = fn_rev8(inp.rs1);
           valid = True;
-        `endif
+        end 
+        else begin 
+          result = 0;
+          valid = False;
+        end 
       end
       if(inp.instr[25] == 1) begin
-        `ifdef RV64
+        if(valueOf(XLEN) == 64) begin 
           result = fn_rev8(inp.rs1);
           valid = True;
-        `endif
+        end 
+        else begin 
+          result = 0;
+          valid = False;
+        end 
       end
       else begin
         result = 0;
@@ -233,12 +241,12 @@ function BBoxOutput fn_compute(BBoxInput inp);
       valid = True;
     end
 
+    `ifdef RV64
     `ROLW : begin
-      `ifdef RV64
         result = fn_rolw(inp.rs1, inp.rs2);
         valid = True;
-      `endif
     end
+    `endif
 
     `ROR: begin
       result = fn_ror(inp.rs1, inp.rs2);
@@ -246,42 +254,40 @@ function BBoxOutput fn_compute(BBoxInput inp);
     end
 
     `RORI: begin
-      `ifdef RV32
+      if(valueOf(XLEN) == 32) begin 
         if(inp.instr[25] == 1'b0) begin
           result = fn_rori(inp.rs1, inp.instr);
           valid = True;
         end
         else begin
           result = 0;
-          valid = 0;
+          valid = False;
         end
-      `endif
-      `ifdef RV64
+      end 
+      if(valueOf(XLEN) == 64) begin 
         result = fn_rori(inp.rs1, inp.instr);
         valid = True;
-      `endif
+      end 
     end
 
-    `RORIW : begin
-      `ifdef RV64
+    `ifdef RV64
+    `RORIW : begin  
         result = fn_roriw(inp.rs1, inp.instr);
         valid = True;
-      `endif
     end
+    `endif
 
-    `RORW : begin
-      `ifdef RV64
+    `ifdef RV64
+    `RORW : begin 
         result = fn_rorw(inp.rs1, inp.rs2);
         valid = True;
-      `endif
     end
-
+    `endif
 
     `SEXTB : begin
       result = fn_sextb(inp.rs1);
       valid = True;
     end
-
 
     `SEXTH : begin
       result = fn_sexth(inp.rs1);
@@ -293,43 +299,47 @@ function BBoxOutput fn_compute(BBoxInput inp);
       valid = True;
     end
 
+
+    `ifdef RV64
     `SH1ADDUW : begin
-      `ifdef RV64
         result = fn_sh1adduw(inp.rs1, inp.rs2);
         valid = True;
-      `endif
     end
+    `endif
 
     `SH2ADD : begin
       result = fn_sh2add(inp.rs1, inp.rs2);
       valid = True;
     end
 
+
+    `ifdef RV64
     `SH2ADDUW : begin
-      `ifdef RV64
         result = fn_sh2adduw(inp.rs1, inp.rs2);
         valid = True;
-      `endif
     end
+    `endif
 
     `SH3ADD : begin
       result = fn_sh3add(inp.rs1, inp.rs2);
       valid = True;
     end
 
+
+    `ifdef RV64
     `SH3ADDUW : begin
-      `ifdef RV64
         result = fn_sh3adduw(inp.rs1, inp.rs2);
         valid = True;
-      `endif
     end
+    `endif
 
+
+    `ifdef RV64
     `SLLIUW : begin
-      `ifdef RV64
         result = fn_slliuw(inp.rs1, inp.instr);
         valid = True;
-      `endif
     end
+    `endif
     
     `XNOR : begin
       result = fn_xnor(inp.rs1,inp.rs2);

@@ -39,13 +39,15 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     print("IP4: ",ip4)
     print("IP6: ",ip6)
 
-    # adduw
-    if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0110011')):
+    # 1, adduw
+    if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0111011')):
+        print("Testing instruction adduw")
         res = rs2 + (rs1&(2**32 - 1))
         valid = '1'
     
     # 2, andn
     elif ((ip1 == '0100000') & (ip4 == '111') & (ip6 == '0110011')):
+        print("Testing instruction andn")
         res = rs1 & ~rs2
         valid = '1'
 
