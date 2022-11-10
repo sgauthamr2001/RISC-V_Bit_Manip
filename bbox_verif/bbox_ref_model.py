@@ -36,6 +36,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     ip6 = istr[25:32]
 
     print("IP1: ",ip1)
+    print("IP2: ",ip2)
     print("IP4: ",ip4)
     print("IP6: ",ip6)
 
@@ -55,12 +56,13 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         valid = '1'
 
     # 4, bclri
-    elif ((ip1[:-1] == '000010') & (ip4 == '000') & (ip6 == '0110011')):
-        if(XLEN == 32 & ip1[-1] == 0):
+    elif ((ip1[:-1] == '010010') & (ip4 == '101') & (ip6 == '0010011')):
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
             valid = '1'
         if(XLEN == 64): 
+            print("debug mark bclri")
             shamt = int(ip1[-1] + ip2, 2)
             res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
             valid = '1'
