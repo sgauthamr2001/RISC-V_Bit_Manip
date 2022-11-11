@@ -56,7 +56,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         valid = '1'
 
     # 4, bclri
-    elif ((ip1[:-1] == '010010') & (ip4 == '101') & (ip6 == '0010011')):
+    elif ((ip1[:-1] == '010010') & (ip4 == '001') & (ip6 == '0010011')):
         if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
@@ -74,7 +74,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 6, bexti
     elif ((ip1[:-1] == '010010') & (ip4 == '101') & (ip6 == '0010011')):
-        if(XLEN == 32 & ip1[-1] == 0):
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 >> (shamt & (XLEN - 1))) & 1
             valid = '1'
@@ -90,7 +90,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 8, binvi
     elif ((ip1[:-1] == '011010') & (ip4 == '001') & (ip6 == '0010011')):
-        if(XLEN == 32 & ip1[-1] == 0):
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 ^ (1 << (shamt & (XLEN - 1))))
             valid = '1'
@@ -106,7 +106,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 10, bseti
     elif ((ip1[:-1] == '001010') & (ip4 == '001') & (ip6 == '0010011')):
-        if(XLEN == 32 & ip1[-1] == 0):
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 | (1 << (shamt & (XLEN - 1))))
             valid = '1'
@@ -120,18 +120,30 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         res = 0
         print("CLMUL Testing\n")
         for i in range(XLEN+1):
-            cond = (rs2 // (2**i)) % 2
+            cond = (rs2 >> i) % 2
             if(cond):
-                res = res ^ (rs1 * (2**i))
+                res = res ^ (rs1 << i)
         valid = '1'
 
     # 12, clmulh
     elif ((ip1 == '0000101') & (ip4 == '011') & (ip6 == '0110011')):
-        pass
+        res = 0
+        print("CLMULH Testing\n")
+        for i in range(1,XLEN+1):
+            cond = (rs2 >> i) % 2
+            if(cond):
+                res = res ^ (rs1 >> (XLEN - i))
+        valid = '1'
 
     # 13, clmulr
     elif ((ip1 == '0000101') & (ip4 == '010') & (ip6 == '0110011')):
-        pass
+        res = 0
+        print("CLMULR Testing\n")
+        for i in range(0,XLEN):
+            cond = (rs2 >> i) % 2
+            if(cond):
+                res = res ^ (rs1 >> (XLEN - i - 1))
+        valid = '1'
 
     # 14, clz
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00000')):
@@ -386,11 +398,11 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         valid = '1'
 
     # 43, zext.h
-    elif ((ip1 == '0000100') & (ip4 == '100') & (ip2 == '00000')):
-        if(XLEN == 32 & ip6 == '0110011'):  
+    elif ((ip1 == '0000100') & (ip4 == '100')):
+        if((XLEN == 32) & (ip6 == '0110011')):  
             res = rs1 % (2**16)
             valid = '1'
-        if(XLEN == 64 & ip6 == '0111011'):
+        if((XLEN == 64) & (ip6 == '0111011')):
             res = rs1 % (2**16)
             valid = '1'
 

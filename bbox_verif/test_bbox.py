@@ -48,7 +48,7 @@ def func_gen(instr_name, shamt='000000', base="RV64"):
     elif instr_name == 'bclr':
         instr = '0100100' + '00000' + '00000' + '001' + '00000' + '0110011'
     elif instr_name == 'bclri':
-        instr = '010010' + shamt + '00000' + '101' + '00000' + '0010011'
+        instr = '010010' + shamt + '00000' + '001' + '00000' + '0010011'
     elif instr_name == 'bext':
         instr = '0100100' + '00000' + '00000' + '101' + '00000' + '0110011'
     elif instr_name == 'bexti': 
@@ -216,6 +216,19 @@ if base == 'RV32':
     [
         (func_gen('bclr'),'bclr', 0),
         (func_gen('bclri',shamt='000010'),'bclri', 1),
+        (func_gen('bext'),'bext', 0),
+        (func_gen('bexti',shamt='000010'),'bexti', 1),
+        (func_gen('binv'),'binv', 0),
+        (func_gen('binvi',shamt='000010'),'binvi', 1),
+        (func_gen('bset'),'bset', 0),
+        (func_gen('bseti',shamt='000010'),'bseti', 1),
+        (func_gen('sextb'),'sextb', 0),
+        (func_gen('sexth'),'sexth', 0),
+        (func_gen('xnor'),'xnor', 0),
+        (func_gen('zexth'),'zexth', 0),
+        (func_gen('clmul'),'clmul', 0),
+        (func_gen('clmulh'),'clmulh', 0),
+        (func_gen('clmulr'),'clmulr', 0)
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
@@ -227,6 +240,21 @@ elif base == 'RV64':
     [
         (func_gen('bclr'),'bclr', 0),
         (func_gen('bclri',shamt='000010'),'bclri', 1),
+        (func_gen('bext'),'bext', 0),
+        (func_gen('bexti',shamt='000010'),'bexti', 1),
+        (func_gen('binv'),'binv', 0),
+        (func_gen('binvi',shamt='000010'),'binvi', 1),
+        (func_gen('bset'),'bset', 0),
+        (func_gen('bseti',shamt='000010'),'bseti', 1),
+        (func_gen('sextb'),'sextb', 0),
+        (func_gen('sexth'),'sexth', 0),
+        (func_gen('xnor'),'xnor', 0),
+        (func_gen('zexth'),'zexth', 0),
+        (func_gen('clmul'),'clmul', 0),
+        (func_gen('clmulh'),'clmulh', 0),
+        (func_gen('clmulr'),'clmulr', 0)
+        # # (func_gen('yukta'),'yukta', 0),
+        # (func_gen('yuktai',shamt='000010'),'yuktai', 1),
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
