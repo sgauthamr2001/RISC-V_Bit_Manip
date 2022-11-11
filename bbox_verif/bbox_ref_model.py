@@ -62,7 +62,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
             valid = '1'
         if(XLEN == 64): 
-            print("debug mark bclri")
             shamt = int(ip1[-1] + ip2, 2)
             res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
             valid = '1'
@@ -402,9 +401,12 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         if((XLEN == 32) & (ip6 == '0110011')):  
             res = rs1 % (2**16)
             valid = '1'
-        if((XLEN == 64) & (ip6 == '0111011')):
+        elif((XLEN == 64) & (ip6 == '0111011')):
             res = rs1 % (2**16)
             valid = '1'
+        else:
+            res = 0
+            valid = '0'
 
     ## logic for all other instr ends
     else:

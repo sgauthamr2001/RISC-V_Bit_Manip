@@ -129,7 +129,10 @@ def func_gen(instr_name, shamt='000000', base="RV64"):
     elif instr_name == 'xnor': 
         instr = '0100000' + '00000' + '00000' + '100' + '00000' + '0110011'
     elif instr_name == 'zexth': 
-        instr = '0000100' + '00000' + '00000' + '100' + '00000' + '0111011'
+        if (base == 'RV32'):
+            instr = '0000100' + '00000' + '00000' + '100' + '00000' + '0110011'
+        else:
+            instr = '0000100' + '00000' + '00000' + '100' + '00000' + '0111011'
     else:
         instr = '1111111' + '11111' + '11111' + '111' + '11111' + '1111111'
         print("Please check the instruction.")
@@ -184,7 +187,24 @@ async def scoreboard(dut, dut_result, rm_result):
 async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
     await initial_setup(dut)
     dut._log.info("*******************************************************")
-    dut._log.info("------------- Test %r of RV%d starts --------------" %(instr_name,XLEN))
+    dut._log.info("------------- Custom Test %r of RV%d starts --------------" %(instr_name,XLEN))
+    ctests = []
+    if (instr_name == 'bclr'):
+        ctests.append((2**XLEN - 1,5))
+    
+    if(len(ctests) > 0):
+        for test in ctests:
+            rs1 = test[0]
+            rs2 = test[1]
+            rm_result = bbox_rm(instr, rs1, rs2, XLEN)
+            await input_driver(dut, instr, rs1, rs2, single_opd)
+            dut_result = await output_monitor(dut)
+            await scoreboard(dut, dut_result, rm_result)
+    dut._log.info("------------- Custom Test %r of RV%d ends ----------------" %(instr_name,XLEN))
+    dut._log.info("*******************************************************")
+
+
+    dut._log.info("------------- Random Test %r of RV%d starts --------------" %(instr_name,XLEN))
     dut._log.info("*******************************************************")
     for i in range (num_of_tests):
         #rs1 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
@@ -199,14 +219,14 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
     
         await scoreboard(dut, dut_result, rm_result)	
     dut._log.info("*******************************************************")
-    dut._log.info("------------- Test %r of RV%d ends ----------------" %(instr_name,XLEN))
+    dut._log.info("------------- Random Test %r of RV%d ends ----------------" %(instr_name,XLEN))
     dut._log.info("*******************************************************")
 
 
 # generates sets of tests based on the different permutations of the possible arguments to the test function
 tf = TestFactory(TB)
 
-base = 'RV64'
+base = 'RV32'
 #To run tests for RV32, change base = 'RV32'
 
 #generates tests for instructions of RV32
@@ -214,21 +234,21 @@ if base == 'RV32':
     tf.add_option('XLEN', [32])
     tf.add_option(('instr','instr_name','single_opd'), 
     [
-        (func_gen('bclr'),'bclr', 0),
-        (func_gen('bclri',shamt='000010'),'bclri', 1),
-        (func_gen('bext'),'bext', 0),
-        (func_gen('bexti',shamt='000010'),'bexti', 1),
-        (func_gen('binv'),'binv', 0),
-        (func_gen('binvi',shamt='000010'),'binvi', 1),
-        (func_gen('bset'),'bset', 0),
-        (func_gen('bseti',shamt='000010'),'bseti', 1),
-        (func_gen('sextb'),'sextb', 0),
-        (func_gen('sexth'),'sexth', 0),
-        (func_gen('xnor'),'xnor', 0),
-        (func_gen('zexth'),'zexth', 0),
-        (func_gen('clmul'),'clmul', 0),
-        (func_gen('clmulh'),'clmulh', 0),
-        (func_gen('clmulr'),'clmulr', 0)
+        # (func_gen('bclr'),'bclr', 0),
+        # (func_gen('bclri',shamt='000010'),'bclri', 1),
+        # (func_gen('bext'),'bext', 0),
+        # (func_gen('bexti',shamt='000010'),'bexti', 1),
+        # (func_gen('binv'),'binv', 0),
+        # (func_gen('binvi',shamt='000010'),'binvi', 1),
+        # (func_gen('bset'),'bset', 0),
+        # (func_gen('bseti',shamt='000010'),'bseti', 1),
+        # (func_gen('sextb'),'sextb', 0),
+        # (func_gen('sexth'),'sexth', 0),
+        # (func_gen('xnor'),'xnor', 0),
+        (func_gen('zexth',base=base),'zexth', 0),
+        # (func_gen('clmul'),'clmul', 0),
+        # (func_gen('clmulh'),'clmulh', 0),
+        # (func_gen('clmulr'),'clmulr', 0)
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
@@ -239,20 +259,20 @@ elif base == 'RV64':
     tf.add_option(('instr','instr_name','single_opd'), 
     [
         (func_gen('bclr'),'bclr', 0),
-        (func_gen('bclri',shamt='000010'),'bclri', 1),
-        (func_gen('bext'),'bext', 0),
-        (func_gen('bexti',shamt='000010'),'bexti', 1),
-        (func_gen('binv'),'binv', 0),
-        (func_gen('binvi',shamt='000010'),'binvi', 1),
-        (func_gen('bset'),'bset', 0),
-        (func_gen('bseti',shamt='000010'),'bseti', 1),
-        (func_gen('sextb'),'sextb', 0),
-        (func_gen('sexth'),'sexth', 0),
-        (func_gen('xnor'),'xnor', 0),
-        (func_gen('zexth'),'zexth', 0),
-        (func_gen('clmul'),'clmul', 0),
-        (func_gen('clmulh'),'clmulh', 0),
-        (func_gen('clmulr'),'clmulr', 0)
+        # (func_gen('bclri',shamt='000010'),'bclri', 1),
+        # (func_gen('bext'),'bext', 0),
+        # (func_gen('bexti',shamt='000010'),'bexti', 1),
+        # (func_gen('binv'),'binv', 0),
+        # (func_gen('binvi',shamt='000010'),'binvi', 1),
+        # (func_gen('bset'),'bset', 0),
+        # (func_gen('bseti',shamt='000010'),'bseti', 1),
+        # (func_gen('sextb'),'sextb', 0),
+        # (func_gen('sexth'),'sexth', 0),
+        # (func_gen('xnor'),'xnor', 0),
+        # (func_gen('zexth'),'zexth', 0),
+        # (func_gen('clmul'),'clmul', 0),
+        # (func_gen('clmulh'),'clmulh', 0),
+        # (func_gen('clmulr'),'clmulr', 0)
         # # (func_gen('yukta'),'yukta', 0),
         # (func_gen('yuktai',shamt='000010'),'yuktai', 1),
     ])

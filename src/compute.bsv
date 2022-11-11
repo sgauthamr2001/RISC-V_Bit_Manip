@@ -366,10 +366,32 @@ function BBoxOutput fn_compute(BBoxInput inp);
       valid = True;
     end
 
-    `ZEXTH : begin
-      result = fn_zexth(inp.rs1);
-      valid = True;
-    end
+    // ZEXTH
+    `ifdef RV32
+      `ZEXTH : begin
+        if(inp.instr[3] == 0) begin
+        result = fn_zexth(inp.rs1);
+        valid = True;
+        end
+        else begin
+        result = 0;
+        valid = False;
+        end
+      end
+    `endif
+
+    `ifdef RV64
+      `ZEXTH : begin
+        if(inp.instr[3] == 1'b1) begin
+        result = fn_zexth(inp.rs1);
+        valid = True;
+        end
+        else begin
+        result = 0;
+        valid = False;
+        end
+      end
+    `endif
     
     default: begin
       result = 0;
