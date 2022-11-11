@@ -70,7 +70,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
           result = 0;
-          valid = False;
+          valid = True;
         end
       end
     `endif
@@ -91,7 +91,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
           result = 0;
-          valid = False;
+          valid = True;
         end
       end
     `endif
@@ -112,7 +112,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
           result = 0;
-          valid = False;
+          valid = True;
         end
       end
     `endif
@@ -133,7 +133,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
           result = 0;
-          valid = False;
+          valid = True;
         end
       end
     `endif
@@ -235,7 +235,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
           result = 0;
-          valid = False;
+          valid = True;
         end
       end
     `endif
@@ -248,7 +248,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
           result = 0;
-          valid = False;
+          valid = True;
         end
       end
     `endif
@@ -279,7 +279,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
           result = 0;
-          valid = False;
+          valid = True;
         end
       end
     `endif
@@ -375,7 +375,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
         result = 0;
-        valid = False;
+        valid = True;
         end
       end
     `endif
@@ -388,7 +388,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
         end
         else begin
         result = 0;
-        valid = False;
+        valid = True;
         end
       end
     `endif

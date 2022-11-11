@@ -234,21 +234,21 @@ if base == 'RV32':
     tf.add_option('XLEN', [32])
     tf.add_option(('instr','instr_name','single_opd'), 
     [
-        # (func_gen('bclr'),'bclr', 0),
-        # (func_gen('bclri',shamt='000010'),'bclri', 1),
-        # (func_gen('bext'),'bext', 0),
-        # (func_gen('bexti',shamt='000010'),'bexti', 1),
-        # (func_gen('binv'),'binv', 0),
-        # (func_gen('binvi',shamt='000010'),'binvi', 1),
-        # (func_gen('bset'),'bset', 0),
-        # (func_gen('bseti',shamt='000010'),'bseti', 1),
-        # (func_gen('sextb'),'sextb', 0),
-        # (func_gen('sexth'),'sexth', 0),
-        # (func_gen('xnor'),'xnor', 0),
-        (func_gen('zexth',base=base),'zexth', 0),
-        # (func_gen('clmul'),'clmul', 0),
-        # (func_gen('clmulh'),'clmulh', 0),
-        # (func_gen('clmulr'),'clmulr', 0)
+        (func_gen('bclr', base = base),'bclr', 0),
+        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1),
+        (func_gen('bext', base = base),'bext', 0),
+        (func_gen('bexti',shamt='000010', base = base),'bexti', 1),
+        (func_gen('binv',base = base),'binv', 0),
+        (func_gen('binvi',shamt='000010', base = base),'binvi', 1),
+        (func_gen('bset', base = base),'bset', 0),
+        (func_gen('bseti',shamt='000010', base = base),'bseti', 1),
+        (func_gen('sextb', base = base),'sextb', 1),
+        (func_gen('sexth', base = base),'sexth', 1),
+        (func_gen('xnor', base = base),'xnor', 0),
+        (func_gen('zexth',base=base),'zexth', 1),
+        (func_gen('clmul', base = base),'clmul', 0),
+        (func_gen('clmulh', base = base),'clmulh', 0),
+        (func_gen('clmulr', base = base),'clmulr', 0)
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
@@ -258,21 +258,21 @@ elif base == 'RV64':
     tf.add_option('XLEN', [64])
     tf.add_option(('instr','instr_name','single_opd'), 
     [
-        (func_gen('bclr'),'bclr', 0),
-        # (func_gen('bclri',shamt='000010'),'bclri', 1),
-        # (func_gen('bext'),'bext', 0),
-        # (func_gen('bexti',shamt='000010'),'bexti', 1),
-        # (func_gen('binv'),'binv', 0),
-        # (func_gen('binvi',shamt='000010'),'binvi', 1),
-        # (func_gen('bset'),'bset', 0),
-        # (func_gen('bseti',shamt='000010'),'bseti', 1),
-        # (func_gen('sextb'),'sextb', 0),
-        # (func_gen('sexth'),'sexth', 0),
-        # (func_gen('xnor'),'xnor', 0),
-        # (func_gen('zexth'),'zexth', 0),
-        # (func_gen('clmul'),'clmul', 0),
-        # (func_gen('clmulh'),'clmulh', 0),
-        # (func_gen('clmulr'),'clmulr', 0)
+        (func_gen('bclr', base = base),'bclr', 0),
+        (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
+        (func_gen('bext', base = base),'bext', 0),
+        (func_gen('bexti',shamt='000010', base = base),'bexti', 1),
+        (func_gen('binv',base = base),'binv', 0),
+        (func_gen('binvi',shamt='000010', base = base),'binvi', 1),
+        (func_gen('bset', base = base),'bset', 0),
+        (func_gen('bseti',shamt='000010', base = base),'bseti', 1),
+        (func_gen('sextb', base = base),'sextb', 1),
+        (func_gen('sexth', base = base),'sexth', 1),
+        (func_gen('xnor', base = base),'xnor', 0),
+        (func_gen('zexth',base=base),'zexth', 1),
+        (func_gen('clmul', base = base),'clmul', 0),
+        (func_gen('clmulh', base = base),'clmulh', 0),
+        (func_gen('clmulr', base = base),'clmulr', 0)
         # # (func_gen('yukta'),'yukta', 0),
         # (func_gen('yuktai',shamt='000010'),'yuktai', 1),
     ])
