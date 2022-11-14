@@ -190,8 +190,76 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
     dut._log.info("------------- Custom Test %r of RV%d starts --------------" %(instr_name,XLEN))
     ctests = []
     if (instr_name == 'bclr'):
-        ctests.append((2**XLEN - 1,5))
+        ctests.append((2**XLEN - 1,0))
+        ctests.append((2**XLEN-1,XLEN-1))
+        ctests.append((2**XLEN-1,XLEN))
+        ctests.append((2**XLEN-1,XLEN+1))
+        ctests.append((2**XLEN-1,XLEN//2))
     
+    if (instr_name == 'bclri'):
+        ctests.append((2**XLEN - 1,0))
+        ctests.append((2,0))
+
+    if (instr_name == 'bext'):
+        ctests.append((2**XLEN - 1,0))
+        ctests.append((2**XLEN-1,XLEN-1))
+        ctests.append((2**XLEN-1,XLEN))
+        ctests.append((2**XLEN-1,XLEN+1))
+        ctests.append((2**XLEN-1,XLEN//2))
+
+    if (instr_name == 'bexti'):
+        ctests.append((2**XLEN - 1,0))
+        ctests.append((4,0))
+
+    if (instr_name == 'binv'):
+        ctests.append((2**XLEN - 1,0))
+        ctests.append((2**XLEN-1,XLEN-1))
+        ctests.append((2**XLEN-1,XLEN))
+        ctests.append((2**XLEN-1,XLEN+1))
+        ctests.append((2**XLEN-1,XLEN//2))
+    
+    if (instr_name == 'binvi'):
+        ctests.append((2**XLEN - 1,0))
+        ctests.append((32,0))
+
+    if (instr_name == 'bset'):
+        ctests.append((2**XLEN - 17,4))
+        ctests.append((0,XLEN-1))
+        ctests.append((0,XLEN))
+        ctests.append((0,XLEN+1))
+        ctests.append((2**XLEN-1 - 2**(XLEN//2),XLEN//2))
+        
+    if (instr_name == 'bseti'):
+        ctests.append((2**XLEN - 17,0))
+        ctests.append((0,0))
+
+    if (instr_name == 'sextb'):
+        ctests.append((2**16 + 2**8 - 1, 0))
+        ctests.append((2**18 + 2**7 - 1, 0))
+        ctests.append((2**19 + 2**4,0))
+        ctests.append((2**20 + 2**7,0))
+
+    if (instr_name == 'sexth'):
+        ctests.append((2**19 + 2**16 - 1, 0))
+        ctests.append((2**20 + 2**15 - 1, 0))
+        ctests.append((2**21 + 2**14, 0))
+        ctests.append((2**22 + 2**15, 0))
+
+    if (instr_name == 'xnor'):
+        ctests.append((2**XLEN - 1, 0))
+        ctests.append((2**XLEN - 1, 2**XLEN -1))
+        ctests.append((2**(XLEN-1)-2, 2**(XLEN-1) + 1))
+        ctests.append((0,0))
+
+    if (instr_name == 'zexth'):
+        ctests.append((2**16 - 1, 0))
+        ctests.append((2**20 + 2**15 - 1, 0))
+        ctests.append((2**22 + 2**14, 0))
+        ctests.append((2**XLEN - 1, 0))
+
+    if (instr_name == 'clmul'):
+        
+
     if(len(ctests) > 0):
         for test in ctests:
             rs1 = test[0]
@@ -226,7 +294,7 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
 # generates sets of tests based on the different permutations of the possible arguments to the test function
 tf = TestFactory(TB)
 
-base = 'RV32'
+base = 'RV64'
 #To run tests for RV32, change base = 'RV32'
 
 #generates tests for instructions of RV32
@@ -235,20 +303,24 @@ if base == 'RV32':
     tf.add_option(('instr','instr_name','single_opd'), 
     [
         (func_gen('bclr', base = base),'bclr', 0),
-        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1),
+        (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
+        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
         (func_gen('bext', base = base),'bext', 0),
-        (func_gen('bexti',shamt='000010', base = base),'bexti', 1),
+        (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
+        (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
         (func_gen('binv',base = base),'binv', 0),
-        (func_gen('binvi',shamt='000010', base = base),'binvi', 1),
+        (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
+        (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
         (func_gen('bset', base = base),'bset', 0),
-        (func_gen('bseti',shamt='000010', base = base),'bseti', 1),
+        (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
+        (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
         (func_gen('sextb', base = base),'sextb', 1),
         (func_gen('sexth', base = base),'sexth', 1),
         (func_gen('xnor', base = base),'xnor', 0),
-        (func_gen('zexth',base=base),'zexth', 1),
-        (func_gen('clmul', base = base),'clmul', 0),
-        (func_gen('clmulh', base = base),'clmulh', 0),
-        (func_gen('clmulr', base = base),'clmulr', 0)
+         (func_gen('zexth',base=base),'zexth', 1),
+        # (func_gen('clmul', base = base),'clmul', 0),
+        # (func_gen('clmulh', base = base),'clmulh', 0),
+        # (func_gen('clmulr', base = base),'clmulr', 0)
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
@@ -260,19 +332,23 @@ elif base == 'RV64':
     [
         (func_gen('bclr', base = base),'bclr', 0),
         (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
+        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
         (func_gen('bext', base = base),'bext', 0),
-        (func_gen('bexti',shamt='000010', base = base),'bexti', 1),
+        (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
+        (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
         (func_gen('binv',base = base),'binv', 0),
-        (func_gen('binvi',shamt='000010', base = base),'binvi', 1),
+        (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
+        (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
         (func_gen('bset', base = base),'bset', 0),
-        (func_gen('bseti',shamt='000010', base = base),'bseti', 1),
+        (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
+        (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
         (func_gen('sextb', base = base),'sextb', 1),
         (func_gen('sexth', base = base),'sexth', 1),
         (func_gen('xnor', base = base),'xnor', 0),
-        (func_gen('zexth',base=base),'zexth', 1),
-        (func_gen('clmul', base = base),'clmul', 0),
-        (func_gen('clmulh', base = base),'clmulh', 0),
-        (func_gen('clmulr', base = base),'clmulr', 0)
+         (func_gen('zexth',base=base),'zexth', 1),
+        # (func_gen('clmul', base = base),'clmul', 0),
+        # (func_gen('clmulh', base = base),'clmulh', 0),
+        # (func_gen('clmulr', base = base),'clmulr', 0)
         # # (func_gen('yukta'),'yukta', 0),
         # (func_gen('yuktai',shamt='000010'),'yuktai', 1),
     ])
@@ -280,6 +356,6 @@ elif base == 'RV64':
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 
 #for each instruction below line generates 10 test vectors, can change to different no.
-tf.add_option('num_of_tests',[10])
+tf.add_option('num_of_tests',[0])
 tf.generate_tests()
 

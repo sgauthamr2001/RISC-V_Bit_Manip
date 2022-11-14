@@ -35,10 +35,10 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     ip5 = istr[20:25]
     ip6 = istr[25:32]
 
-    print("IP1: ",ip1)
-    print("IP2: ",ip2)
-    print("IP4: ",ip4)
-    print("IP6: ",ip6)
+    # print("IP1: ",ip1)
+    # print("IP2: ",ip2)
+    # print("IP4: ",ip4)
+    # print("IP6: ",ip6)
 
     # adduw
     if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0110011')):
@@ -63,7 +63,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             valid = '1'
         elif((XLEN == 32) & (ip1[-1] == '1')):
             res = 0
-            print("shamt[5] = 1 is reserved for RV32")
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
             valid = '1'
         elif(XLEN == 64): 
             shamt = int(ip1[-1] + ip2, 2)
@@ -83,7 +83,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             valid = '1'
         elif((XLEN == 32) & (ip1[-1] == '1')):
             res = 0
-            print("shamt[5] = 1 is reserved for RV32")
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
             valid = '1'
         elif(XLEN == 64): 
             shamt = int(ip1[-1] + ip2, 2)
@@ -103,7 +103,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             valid = '1'
         elif((XLEN == 32) & (ip1[-1] == '1')):
             res = 0
-            print("shamt[5] = 1 is reserved for RV32")
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
             valid = '1'
         elif(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
@@ -123,7 +123,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             valid = '1'
         elif((XLEN == 32) & (ip1[-1] == '1')):
             res = 0
-            print("shamt[5] = 1 is reserved for RV32")
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
             valid = '1'
         elif(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
@@ -323,7 +323,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             valid = '1'
         elif((XLEN == 32) & (ip1[-1] == '1')):
             res = 0
-            print("shamt[5] = 1 is reserved for RV32")
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
             valid = '1'
         elif(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
