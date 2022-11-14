@@ -1,3 +1,5 @@
+// Basic Bit Manipulation
+
 function Bit#(XLEN) fn_andn(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
   return rs1 & ~rs2;
 endfunction
@@ -145,17 +147,21 @@ endfunction
 `endif 
 
 function Bit#(XLEN) fn_sextb(Bit#(XLEN) rs1);
+  // SEXTB sign extends the least significant byte (8 bits) in rs1
   return signExtend(rs1[7:0]);
 endfunction
 
 function Bit#(XLEN) fn_sexth(Bit#(XLEN) rs1);
+  // SEXTH sign extends the least significant half-word (16 bits) in rs1
   return signExtend(rs1[15:0]);
 endfunction
 
 function Bit#(XLEN) fn_xnor(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
+  // XNOR operation is a bitwise op. Like bits output 1 and unlike output 0.
   return ~(rs1 ^ rs2);
 endfunction
 
 function Bit#(XLEN) fn_zexth(Bit#(XLEN) rs1);
+  // ZEXTH is an unsigned extension to least significant half-word in rs1
   return zeroExtend(rs1[15:0]);
 endfunction

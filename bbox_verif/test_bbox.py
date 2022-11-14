@@ -258,7 +258,22 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
         ctests.append((2**XLEN - 1, 0))
 
     if (instr_name == 'clmul'):
-        
+        ctests.append((2**XLEN - 1, 0))
+        ctests.append((2**XLEN - 1, 2**XLEN - 1))
+        ctests.append((2**(XLEN//2) - 1, 2**(XLEN//2) - 1))
+        ctests.append(((2**XLEN - 1)//3, 2**XLEN - 1))
+
+    if (instr_name == 'clmulh'):
+        ctests.append((2**XLEN - 1, 0))
+        ctests.append((2**XLEN - 1, 2**XLEN - 1))
+        ctests.append((2**(XLEN//2) - 1, 2**(XLEN//2) - 1))
+        ctests.append(((2**XLEN - 1)//3, 2**XLEN - 1))
+
+    if (instr_name == 'clmulr'):
+        ctests.append((2**XLEN - 1, 0))
+        ctests.append((2**XLEN - 1, 2**XLEN - 1))
+        ctests.append((2**(XLEN//2) - 1, 2**(XLEN//2) - 1))
+        ctests.append(((2**XLEN - 1)//3, 2**XLEN - 1))
 
     if(len(ctests) > 0):
         for test in ctests:
@@ -302,23 +317,23 @@ if base == 'RV32':
     tf.add_option('XLEN', [32])
     tf.add_option(('instr','instr_name','single_opd'), 
     [
-        (func_gen('bclr', base = base),'bclr', 0),
-        (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
-        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
-        (func_gen('bext', base = base),'bext', 0),
-        (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
-        (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
-        (func_gen('binv',base = base),'binv', 0),
-        (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
-        (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
-        (func_gen('bset', base = base),'bset', 0),
-        (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
-        (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
-        (func_gen('sextb', base = base),'sextb', 1),
-        (func_gen('sexth', base = base),'sexth', 1),
-        (func_gen('xnor', base = base),'xnor', 0),
-         (func_gen('zexth',base=base),'zexth', 1),
-        # (func_gen('clmul', base = base),'clmul', 0),
+        # (func_gen('bclr', base = base),'bclr', 0),
+        # (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
+        # (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
+        # (func_gen('bext', base = base),'bext', 0),
+        # (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
+        # (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
+        # (func_gen('binv',base = base),'binv', 0),
+        # (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
+        # (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
+        # (func_gen('bset', base = base),'bset', 0),
+        # (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
+        # (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
+        # (func_gen('sextb', base = base),'sextb', 1),
+        # (func_gen('sexth', base = base),'sexth', 1),
+        # (func_gen('xnor', base = base),'xnor', 0),
+        # (func_gen('zexth',base=base),'zexth', 1),
+        (func_gen('clmul', base = base),'clmul', 0),
         # (func_gen('clmulh', base = base),'clmulh', 0),
         # (func_gen('clmulr', base = base),'clmulr', 0)
     ])
@@ -330,25 +345,25 @@ elif base == 'RV64':
     tf.add_option('XLEN', [64])
     tf.add_option(('instr','instr_name','single_opd'), 
     [
-        (func_gen('bclr', base = base),'bclr', 0),
-        (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
-        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
-        (func_gen('bext', base = base),'bext', 0),
-        (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
-        (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
-        (func_gen('binv',base = base),'binv', 0),
-        (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
-        (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
-        (func_gen('bset', base = base),'bset', 0),
-        (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
-        (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
-        (func_gen('sextb', base = base),'sextb', 1),
-        (func_gen('sexth', base = base),'sexth', 1),
-        (func_gen('xnor', base = base),'xnor', 0),
-         (func_gen('zexth',base=base),'zexth', 1),
+        # (func_gen('bclr', base = base),'bclr', 0),
+        # (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
+        # (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
+        # (func_gen('bext', base = base),'bext', 0),
+        # (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
+        # (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
+        # (func_gen('binv',base = base),'binv', 0),
+        # (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
+        # (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
+        # (func_gen('bset', base = base),'bset', 0),
+        # (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
+        # (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
+        # (func_gen('sextb', base = base),'sextb', 1),
+        # (func_gen('sexth', base = base),'sexth', 1),
+        # (func_gen('xnor', base = base),'xnor', 0),
+        # (func_gen('zexth',base=base),'zexth', 1),
         # (func_gen('clmul', base = base),'clmul', 0),
         # (func_gen('clmulh', base = base),'clmulh', 0),
-        # (func_gen('clmulr', base = base),'clmulr', 0)
+        (func_gen('clmulr', base = base),'clmulr', 0)
         # # (func_gen('yukta'),'yukta', 0),
         # (func_gen('yuktai',shamt='000010'),'yuktai', 1),
     ])
