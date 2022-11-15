@@ -15,7 +15,7 @@ function Bit#(XLEN) fn_bclr(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
 endfunction
 
 function Bit#(XLEN) fn_bclri(Bit#(XLEN) rs1, Bit#(32) instr);
-  // BCLRI clears the bit present in ith position in rs1 to 0
+  // BCLRI clears the bit present in ith position in rs1 to 0 (Immediate type)
   // Value of i comes from lsb log2(XLEN) bits of shamt
   // Pseudo Code:
   // index = shamt & (XLEN - 1);
@@ -25,7 +25,7 @@ function Bit#(XLEN) fn_bclri(Bit#(XLEN) rs1, Bit#(32) instr);
 endfunction
 
 function Bit#(XLEN) fn_bext(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
-  // BEXT extracts the bit present in ith position of rs1
+  // BEXT extracts the bit present in ith position of rs1 
   // Pseudo Code:
   // index = rs2 & (XLEN - 1);
   // rd = (rs1 >> index) & 1;
@@ -34,7 +34,7 @@ function Bit#(XLEN) fn_bext(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
 endfunction
 
 function Bit#(XLEN) fn_bexti(Bit#(XLEN) rs1, Bit#(32) instr);
-  // BEXTI extracts the bit present in ith position in rs1 
+  // BEXTI extracts the bit present in ith position in rs1 (Immediate type)
   // Pseudo Code:
   // index = shamt & (XLEN - 1);
   // rd = (rs1 >> index) & 1;
@@ -52,7 +52,7 @@ function Bit#(XLEN) fn_binv(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
 endfunction
 
 function Bit#(XLEN) fn_binvi(Bit#(XLEN) rs1, Bit#(32) instr);
-  // BINV inverts the bit present in ith position in rs1
+  // BINVI inverts the bit present in ith position in rs1 (Immediate type)
   // Pseudo Code:
   // index = shamt & (XLEN - 1);
   // rd = rs1 ^ (1 << index);
@@ -70,7 +70,7 @@ function Bit#(XLEN) fn_bset(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
 endfunction
 
 function Bit#(XLEN) fn_bseti(Bit#(XLEN) rs1, Bit#(32) instr);
-  // BSET sets the bit present in ith position to 1
+  // BSETI sets the bit present in ith position to 1 (Immediate type)
   // Pseudo Code:
   // index = shamt & (XLEN - 1);
   // rd = rs1 & ~(1 << (index));
