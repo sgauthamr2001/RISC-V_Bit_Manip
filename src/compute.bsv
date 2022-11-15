@@ -21,15 +21,20 @@ import bbox_types :: *;
 /*********************/
 
 
-/*doc: fn_compute: The top function where depending on the instruction the 
+/* Edited by : Bachotti Sai Krishna Shanmukh ee19b009
+  fn_compute: is the TOP FUNCTION where depending on the instruction the 
   required function is called, result is computed and returned.
   The output of the function is 1b valid signal and XLEN width result
 
   Consider an example instruction ANDN of the Zbb group that has been implemented.
   The 32b instruction format of ANDN is defined in bbox.defines and case statement matches 
   when instr is of type ANDN.
+
   Similarly all instruction groups like Zba, Zbb, Zbc, Zbs are defined and called in 
   fn_compute appropriately
+
+  ifdef directive is used for some cases in the 'case ladder' if that instruction is defined only 
+  for RV64 mode
 */
 function BBoxOutput fn_compute(BBoxInput inp);
   Bit#(XLEN) result;
