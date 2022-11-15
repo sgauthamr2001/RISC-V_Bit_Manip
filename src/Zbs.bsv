@@ -71,7 +71,6 @@ endfunction
 // Function: Sets the bit present in ith position to 1 The value of
 //           i comes from lsb log2(XLEN) bits of shamt.
 function Bit#(XLEN) fn_bseti(Bit#(XLEN) rs1, Bit#(32) instr);
-
   Bit#(XLEN) one = 1; 
   return rs1 | (one << (instr[25:20] & fromInteger(valueOf(XLEN) - valueOf(1))));
 endfunction

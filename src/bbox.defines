@@ -5,11 +5,15 @@ Author : Mouna Krishna
 Email id : mounakrishna@mindgrovetech.in
 Details: Has the macros used for instruction comparison
 
+Edited by: Bachotti Sai Krishna Shanmukh
 --------------------------------------------------------------------------------------------------
 */
 
 // Add instruction macors here which can be used in the 
 // case statement for understandability and easy modifications.
+// Each instruction has been encoded based on the opcodes
+// The variable bits due to operands and immediate values are
+// dealt using '?' which could correspond to a 0 or 1. 
 
 // 2.1
 `define ADDUW 32'b0000100??????????000?????0111011
@@ -97,4 +101,3 @@ Details: Has the macros used for instruction comparison
 `define XNOR  32'b0100000??????????100?????0110011
 // 2.43*
 `define ZEXTH 32'b000010000000?????100?????011?011
-
