@@ -1,6 +1,18 @@
 # BitManip Extension project
 
-Students are required to read through the Bit Manipulation Spec by RISC-V and implement it in **Bluespec** and verify it using **cocotb**. The spec pdf is present in docs/bitmanip-1.0.0-38-g865e7a7.pdf .
+This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/shakti/bboxStudents). The original README.md is made avaialble [here.](https://gitlab.com/sgauthamr2001/bbox/-/blob/master/README_source.md)
+
+
+### Introduction 
+
+<div align="justify"> The bit manipulation extension comprises of several extensions to the conventional RISC-V architecture, which enables to reduce the code size (each instruction needs to be written using several RV32/64 instructions), also provide improvement on terms of performance and energy. Bit manipulation involves performing operations like shifting, counting etc. on the bits to obtain information or transform them to some apllication usable format. A wide range of applications are benefitted including error control codes, data compression to address generation for memory accesses. Through this project the RISC-V Bit Manipulation Extension (both RV32/64) has been implemented in Bluespec System Verilog and verified using Python3 (cocotb) in accordance to the specification document. </div>
+
+### Bit-Manipulation Extensions
+There are four sets of extensions freezed by RISC-V international which include: 
+- Zba, Extensions to accelerate address transalation for accessing basic array types.
+- Zbb, Extnesions to perform basic bit manipulation operations like logical with negate, counting, rotate etc. 
+- Zbc, Extensions to perform carry-less multiplication.
+- Zbs, Extensions to perform single-bit operations like set, clear etc. 
 
 ### The repo structure is as follows:
 - bbox.bsv - The top module of the design. Has the interface definition and module definition which calls the BitManip calculation.
