@@ -26,6 +26,7 @@ def sign_extend(value, bits):
 def bbox_rm(instr, rs1, rs2, XLEN):
 
     istr = bindigits(instr, 32)
+    print(len(istr))
     #istr = istr[::-1]
 
     ip1 = istr[0:7]
@@ -35,15 +36,19 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     ip5 = istr[20:25]
     ip6 = istr[25:32]
 
-    # print("IP1: ",ip1)
-    # print("IP2: ",ip2)
-    # print("IP4: ",ip4)
-    # print("IP6: ",ip6)
+    print("IP1: ",ip1)
+    print("IP2: ",ip2)
+    print("IP4: ",ip4)
+    print("IP6: ",ip6)
 
     # adduw
-    if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0110011')):
-        res = rs2 + (rs1&(2**32 - 1))
-        valid = '1'
+    if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0111011')):
+        if(XLEN == 64):
+            res = rs2 + (rs1&(2**32 - 1))
+            valid = '1'
+        else:
+            res = 0
+            valid = '1'
     
     # 2, andn
     elif ((ip1 == '0100000') & (ip4 == '111') & (ip6 == '0110011')):
@@ -162,20 +167,30 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 14, clz
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00000')):
+        print("Testing instruction clz")
         res = 0
-        while ((rs1 & (1 << (XLEN - 1))) == 0):
-            rs1 = (rs1 << 1)
-            res += 1
+        if(rs1 == 0): 
+            res = XLEN
+        else:
+            while ((rs1 & (1 << (XLEN - 1))) == 0):
+                rs1 = (rs1 << 1)
+                res += 1
         valid = '1'
+
 
     # 15, clzw
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0011011') & (ip2 == '00000')):
+        print("Testing instruction clzw")
         if(XLEN == 64):
-            res = 0
-            while ((rs1 & (1 << 31)) == 0):
-                rs1 = (rs1 << 1)
-                res += 1
+            if((rs1 & (4294967295)) == 0): 
+                res = 32
+            else: 
+                res = 0
+                while ((rs1 & (1 << 31)) == 0):
+                    rs1 = (rs1 << 1)
+                    res += 1
             valid = '1'
+
 
     # 16, cpop
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00010')):    
@@ -268,14 +283,15 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 26, rev8
     elif ((ip1[:-1] == '011010') & (ip4 == '101') & (ip6 == '0010011') & (ip2 == '11000')): 
-        if(XLEN == 32 & ip1[-1] == 0): 
+        print("REV8 is executing")
+        if((XLEN == 32) & (ip1[-1] == '0')): 
             res = 0 
             num_bytes = int(XLEN/8)
             for i in range(num_bytes):
                 res += (rs1 & 255) << (8 * (num_bytes - i - 1))
                 rs1 = rs1 >> 8 
             valid = '1'
-        if(XLEN == 64 & ip1[-1] == 1): 
+        if((XLEN == 64) & (ip1[-1] == '1')): 
             res = 0 
             num_bytes = int(XLEN/8)
             for i in range(num_bytes):
@@ -316,8 +332,8 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         valid = '1'
 
     # 30, rori
-    elif  ((ip1 == '011000') & (ip4 == '101') & (ip6 == '0010011')): 
-        if(XLEN == 32 & ip1[-1] == 0):
+    elif  ((ip1[:-1] == '011000') & (ip4 == '101') & (ip6 == '0010011')): 
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 >> shamt) | ((rs1) << (XLEN - shamt))
             valid = '1'
@@ -331,8 +347,10 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             valid = '1'
 
     # 31, roriw
+    # '0110000' + shamt + '00000' + '101' + '00000' + '0011011'
     elif ((ip1 == '0110000') & (ip4 == '101') & (ip6 == '0011011')): 
         if(XLEN == 64):
+            print("Testing instruction roriw")
             shamt = int(ip2, 2)
             rs1 = rs1 & (4294967295)
             res = (rs1 >> shamt) | ((rs1) << (32 - shamt))
@@ -429,7 +447,8 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         if(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
             rs1 = rs1 & (4294967295)
-            rs1 = rs1 << shamt 
+            res = rs1 << shamt 
+            valid = '1'
         elif(XLEN == 32):
             res = 0
             print("SLLI.UW not defined in RV32 mode")

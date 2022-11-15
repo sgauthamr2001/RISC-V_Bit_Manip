@@ -1,6 +1,6 @@
 TOPFILE=bbox.bsv
 BSVINCDIR=.:%/Libraries:./src
-BSCDEFINES=RV64
+BSCDEFINES=RV32
 VERILOGDIR=verilog/
 BUILDDIR=intermediate/
 

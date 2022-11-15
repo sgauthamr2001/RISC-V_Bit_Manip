@@ -105,7 +105,7 @@ def func_gen(instr_name, shamt='000000', base="RV64"):
     elif instr_name == 'rori':
         instr = '011000' + shamt + '00000' + '101' + '00000' + '0010011'
     elif instr_name == 'roriw': 
-        instr = '0110000' + shamt + '00000' + '101' + '00000' + '0011011'
+        instr = '011000' + shamt + '00000' + '101' + '00000' + '0011011'
     elif instr_name == 'rorw': 
         instr = '0110000' + '00000' + '00000' + '101' + '00000' + '0111011'
     elif instr_name == 'sextb': 
@@ -283,9 +283,537 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
             await input_driver(dut, instr, rs1, rs2, single_opd)
             dut_result = await output_monitor(dut)
             await scoreboard(dut, dut_result, rm_result)
-    dut._log.info("------------- Custom Test %r of RV%d ends ----------------" %(instr_name,XLEN))
-    dut._log.info("*******************************************************")
+        dut._log.info("------------- Custom Test %r of RV%d ends ----------------" %(instr_name,XLEN))
+        dut._log.info("*******************************************************")
 
+
+    if(instr_name == 'adduw'):
+        
+        # Test vectors for add.uw 
+        # 1) Checks zero extension of rs1 and other cases
+
+        rs1_test = []
+        rs2_test = []
+        
+        rs1_test.append(2**32 - 1) 
+        rs2_test.append(0)
+
+        rs1_test.append(2**32 - 1)
+        rs2_test.append(1)
+
+        rs1_test.append(2**32 - 1)
+        rs2_test.append(2**64 - 1)
+
+        rs1_test.append((2**32-1) << 31)
+        rs2_test.append(1)
+    
+    elif(instr_name == 'andn'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(2**XLEN - 1)
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(0)
+
+        rs1_test.append(random.randint(0,(2**XLEN)-1))
+        rs2_test.append(random.randint(0,(2**XLEN)-1))           
+    
+    elif(instr_name == 'clz'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(0)            
+
+        rs1_test.append(0)
+        rs2_test.append(0)            
+
+        val = '00000000000000000001010101010101'
+        rs1_test.append(int(val,2))
+        rs2_test.append(0)           
+
+    elif(instr_name == 'clzw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        val = 2**(64) - 2**(32)
+        rs1_test.append(val)
+        rs2_test.append(0)    
+
+        val = 2**(64) - 2**(31)
+        rs1_test.append(val)
+        rs2_test.append(0)            
+
+        val = 2**(51) - 2**(32) + 2**(18) - 1
+        rs1_test.append(val)
+        rs2_test.append(0)   
+
+    elif(instr_name == 'cpop'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)    
+
+        rs1_test.append(1)
+        rs2_test.append(0)     
+               
+        val = '01010101010101010101010101010101'
+        rs1_test.append(int(val, 2))
+        rs2_test.append(0)   
+
+    elif(instr_name == 'cpopw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(64) - 2**(32))
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(64) - 2**(30))
+        rs2_test.append(0)    
+
+        rs1_test.append(2**(64) - 1)
+        rs2_test.append(0)     
+               
+        rs1_test.append(0)
+        rs2_test.append(0)  
+
+    elif(instr_name == 'ctz'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)    
+
+        if(XLEN == 64):
+            rs1_test.append(2**(64) - 2**(32))
+            rs2_test.append(0)     
+        else:
+            rs1_test.append(2**(32) - 2**(16))
+            rs2_test.append(0) 
+       
+        rs1_test.append(2**8)
+        rs2_test.append(0)   
+    
+    elif(instr_name == 'ctzw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)    
+
+        rs1_test.append(2**(64) - 2**(35))
+        rs2_test.append(0)     
+        
+        rs1_test.append(2**(64) - 2**(28))
+        rs2_test.append(0)   
+
+    elif(instr_name == 'max'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)                
+
+        rs1_test.append(-1)
+        rs2_test.append(200)    
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append(-1)     
+        
+        rs1_test.append(-1)
+        rs2_test.append((2**(XLEN-1))-1)   
+
+    elif(instr_name == 'min'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)                
+
+        rs1_test.append(-1)
+        rs2_test.append(200)    
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append(-1)     
+        
+        rs1_test.append(-1)
+        rs2_test.append((2**(XLEN-1))-1)   
+
+    elif(instr_name == 'maxu'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append((2**XLEN)-1)          
+
+        rs1_test.append(2**(XLEN-1))   
+        rs2_test.append((2**XLEN)-1)    
+
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append(1)     
+        
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)   
+
+    elif(instr_name == 'minu'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append((2**XLEN)-1)          
+
+        rs1_test.append(2**(XLEN-1))   
+        rs2_test.append((2**XLEN)-1)    
+
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append(1)     
+        
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)  
+    
+    elif(instr_name == 'orcb'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 2**(XLEN - 17))
+        rs2_test.append(48)       
+
+        rs1_test.append(2**(XLEN-9) + 2**(XLEN - 25))
+        rs2_test.append(35)
+
+        if(XLEN == 64):
+            # rs1_test.append(2**(64) - 1)
+            rs1_test.append(2**(XLEN-33) + 2**(XLEN - 49))
+            rs2_test.append(10)
+
+            # rs1_test.append(2**(XLEN-41)+ 2**(XLEN - 57))
+            rs1_test.append(0)
+            rs2_test.append(10)
+
+        else: 
+            rs1_test.append(0)
+            rs2_test.append(10)
+
+            rs1_test.append(2**(32) - 1)
+            rs2_test.append(10)
+
+    elif(instr_name == 'orn'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)       
+        rs2_test.append(2**(XLEN) - 2)
+
+        rs1_test.append(1)
+        rs2_test.append(0)
+
+        rs1_test.append(0)
+        rs2_test.append(1)
+
+        rs1_test.append(64)
+        rs2_test.append(2**(XLEN) - 1)
+
+    elif(instr_name == 'rev8'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)       
+        rs2_test.append(0)
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)
+
+        if(XLEN == 64):
+            rs1_test.append(2**(64) - 2**(32))
+            rs2_test.append(0)
+        else:
+            rs1_test.append(2**(32) - 2**(16))
+            rs2_test.append(0) 
+
+        rs1_test.append(2**(32) - 2**(24))
+        rs2_test.append(0)
+
+    elif(instr_name == 'rol'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 1)
+        rs2_test.append(3)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
+
+        rs1_test.append(2**(XLEN - 1))
+
+        if(XLEN == 64):
+            val = '00111000011'
+            rs2_test.append(int(val,2))            
+        else: 
+            val = '00111100011'
+            rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(0)  
+
+    elif(instr_name == 'rolw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(33) - 2**(4))
+        rs2_test.append(3)                
+
+        rs1_test.append(1)
+        rs2_test.append(2**6 - 1)         
+
+        rs1_test.append(2**(31))
+        val = '00111100011'
+        rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(31))
+        rs2_test.append(0) 
+
+    elif(instr_name == 'ror'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 1)
+        rs2_test.append(3)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
+
+        rs1_test.append(2**(XLEN - 1))
+
+        if(XLEN == 64):
+            val = '00111000011'
+            rs2_test.append(int(val,2))            
+        else: 
+            val = '00111100011'
+            rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(0)   
+
+    elif(instr_name == 'rori'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 1)
+        rs2_test.append(3)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
+
+        rs1_test.append(2**(XLEN-1) + 2**(XLEN - 17))
+        rs2_test.append(0)            
+
+        rs1_test.append(1)
+        rs2_test.append(0) 
+
+    elif(instr_name == 'rorw'): 
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(33) - 2**(4))
+        rs2_test.append(5)                
+
+        rs1_test.append(1)
+        rs2_test.append(2**6 - 1)         
+        
+        rs1_test.append(2**(33) - 2**(4))
+        val = '00111100011'
+        rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(31))
+        rs2_test.append(0) 
+
+    elif(instr_name == 'roriw'): 
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(45) - 2**(4))
+        rs2_test.append(5)                
+
+        rs1_test.append(2**(32) - 2)
+        rs2_test.append(6)         
+        
+        rs1_test.append(2**(30) - 1)
+        rs2_test.append(7)    
+
+        rs1_test.append(1)
+        rs2_test.append(8)
+    
+    elif(instr_name == 'sh1add'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(2**XLEN-1)
+
+        rs1_test.append(0)
+        rs2_test.append(2**XLEN-1)
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(0)
+
+        rs1_test.append(0)
+        rs2_test.append(0)
+
+    elif(instr_name == 'sh1adduw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**64-1)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**64-2**32)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**32-1)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**64-1)
+        rs2_test.append(1)
+
+    elif(instr_name == 'sh2add'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(2**XLEN-1)
+
+        rs1_test.append(0)
+        rs2_test.append(2**XLEN-1)
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(0)
+
+        rs1_test.append(0)
+        rs2_test.append(0)
+
+    elif(instr_name == 'sh2adduw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**64-1)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**64-2**32)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**32-1)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**64-1)
+        rs2_test.append(1)
+    
+    elif(instr_name == 'sh3add'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(2**XLEN-1)
+
+        rs1_test.append(0)
+        rs2_test.append(2**XLEN-1)
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(0)
+
+        rs1_test.append(0)
+        rs2_test.append(0)
+
+    elif(instr_name == 'sh3adduw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**64-1)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**64-2**32)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**32-1)
+        rs2_test.append(2**64-1)
+
+        rs1_test.append(2**64-1)
+        rs2_test.append(1)
+    
+    elif(instr_name == 'slliuw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**64-1)
+        rs2_test.append(0)
+
+        rs1_test.append(2**64-2**32)
+        rs2_test.append(0)
+
+        rs1_test.append(2**32-1)
+        rs2_test.append(0)
+
+        rs1_test.append(2**64-2**32+1)
+        rs2_test.append(0)       
+
+    if(len(ctests) == 0):
+        for i in range(len(rs1_test)):
+            rs1 = rs1_test[i]
+            rs2 = rs2_test[i]
+            rm_result = bbox_rm(instr, rs1, rs2, XLEN)
+            await input_driver(dut, instr, rs1, rs2, single_opd)
+            dut_result = await output_monitor(dut)
+        
+            await scoreboard(dut, dut_result, rm_result)
+        dut._log.info("------------- Custom Test %r of RV%d ends ----------------" %(instr_name,XLEN))
+        dut._log.info("*******************************************************")
 
     dut._log.info("------------- Random Test %r of RV%d starts --------------" %(instr_name,XLEN))
     dut._log.info("*******************************************************")
@@ -294,6 +822,13 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
         #rs2 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
         rs1 = random.randint(0,(2**XLEN)-1) 
         rs2 = random.randint(0,(2**XLEN)-1)
+
+        # if(i > 9):
+
+        #     # Test vectors for add.uw 
+        #     # 1) Checks zero extension of rs1
+        #     rs1 = rs1_test[i - 10]
+        #     rs2 = rs2_test[i - 10]
 
         rm_result = bbox_rm(instr, rs1, rs2, XLEN)
     
@@ -309,7 +844,7 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
 # generates sets of tests based on the different permutations of the possible arguments to the test function
 tf = TestFactory(TB)
 
-base = 'RV64'
+base = 'RV32'
 #To run tests for RV32, change base = 'RV32'
 
 #generates tests for instructions of RV32
@@ -317,25 +852,61 @@ if base == 'RV32':
     tf.add_option('XLEN', [32])
     tf.add_option(('instr','instr_name','single_opd'), 
     [
-        # (func_gen('bclr', base = base),'bclr', 0),
-        # (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
-        # (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
-        # (func_gen('bext', base = base),'bext', 0),
-        # (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
-        # (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
-        # (func_gen('binv',base = base),'binv', 0),
-        # (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
-        # (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
-        # (func_gen('bset', base = base),'bset', 0),
-        # (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
-        # (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
-        # (func_gen('sextb', base = base),'sextb', 1),
-        # (func_gen('sexth', base = base),'sexth', 1),
-        # (func_gen('xnor', base = base),'xnor', 0),
-        # (func_gen('zexth',base=base),'zexth', 1),
+        (func_gen('bclr', base = base),'bclr', 0),
+        (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
+        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
+        (func_gen('bext', base = base),'bext', 0),
+        (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
+        (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
+        (func_gen('binv',base = base),'binv', 0),
+        (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
+        (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
+        (func_gen('bset', base = base),'bset', 0),
+        (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
+        (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
+        (func_gen('sextb', base = base),'sextb', 1),
+        (func_gen('sexth', base = base),'sexth', 1),
+        (func_gen('xnor', base = base),'xnor', 0),
+        (func_gen('zexth',base=base),'zexth', 1),
         (func_gen('clmul', base = base),'clmul', 0),
-        # (func_gen('clmulh', base = base),'clmulh', 0),
-        # (func_gen('clmulr', base = base),'clmulr', 0)
+        (func_gen('clmulh', base = base),'clmulh', 0),
+        (func_gen('clmulr', base = base),'clmulr', 0),
+        #(func_gen('adduw', base = base),'adduw', 0),
+        (func_gen('andn', base = base), 'andn', 0),
+        (func_gen('clz', base = base), 'clz', 1),
+        # (func_gen('clzw', base = base), 'clzw', 1),
+        (func_gen('cpop', base = base), 'cpop', 1),
+        # (func_gen('cpopw', base = base), 'cpopw', 1),
+        (func_gen('ctz', base = base), 'ctz', 1),
+        # (func_gen('ctzw', base = base), 'ctzw', 1),
+        (func_gen('max', base = base), 'max', 0),
+        (func_gen('min', base = base), 'min', 0),
+        # (func_gen('maxu', base = base), 'maxu', 0),     
+        # (func_gen('minu', base = base), 'minu', 0),
+        (func_gen('orcb', base = base), 'orcb', 1),
+        (func_gen('orn', base = base), 'orn', 0),
+        (func_gen('rev8', base=base), 'rev8', 1),
+        (func_gen('rol', base = base), 'rol', 0),
+        # (func_gen('rolw', base = base), 'rolw', 0),
+        (func_gen('ror', base = base), 'ror', 0),
+        (func_gen('rori', '111111', base = base), 'rori', 1),
+        (func_gen('rori', '011111', base = base), 'rori', 1),
+        (func_gen('rori', '000001', base = base), 'rori', 1),
+        # (func_gen('rorw', base = base), 'rorw', 0),
+        # (func_gen('roriw', '000001', base = base), 'roriw', 1),
+        # (func_gen('roriw', '011111', base = base), 'roriw', 1),
+        # (func_gen('roriw', '000101', base = base), 'roriw', 1),
+        # (func_gen('roriw', '000000', base = base), 'roriw', 1),
+        (func_gen('sh1add', base = base),'sh1add',0),
+        # (func_gen('sh1adduw', base = base),'sh1adduw',0),
+        (func_gen('sh2add', base = base),'sh2add',0),
+        # (func_gen('sh2adduw', base = base),'sh2adduw',0),
+        (func_gen('sh3add', base = base),'sh3add',0),
+        #(func_gen('sh3adduw', base = base),'sh3adduw',0),
+        # (func_gen('slliuw','000000', base = base),'slliuw',1),
+        # (func_gen('slliuw','111111', base = base),'slliuw',1),
+        # (func_gen('slliuw','100000', base = base),'slliuw',1),
+        # (func_gen('slliuw','000101', base = base),'slliuw',1)
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
@@ -345,25 +916,61 @@ elif base == 'RV64':
     tf.add_option('XLEN', [64])
     tf.add_option(('instr','instr_name','single_opd'), 
     [
-        # (func_gen('bclr', base = base),'bclr', 0),
-        # (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
-        # (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
-        # (func_gen('bext', base = base),'bext', 0),
-        # (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
-        # (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
-        # (func_gen('binv',base = base),'binv', 0),
-        # (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
-        # (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
-        # (func_gen('bset', base = base),'bset', 0),
-        # (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
-        # (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
-        # (func_gen('sextb', base = base),'sextb', 1),
-        # (func_gen('sexth', base = base),'sexth', 1),
-        # (func_gen('xnor', base = base),'xnor', 0),
-        # (func_gen('zexth',base=base),'zexth', 1),
-        # (func_gen('clmul', base = base),'clmul', 0),
-        # (func_gen('clmulh', base = base),'clmulh', 0),
-        (func_gen('clmulr', base = base),'clmulr', 0)
+        (func_gen('bclr', base = base),'bclr', 0),
+        (func_gen('bclri',base = base, shamt='000010'),'bclri', 1),
+        (func_gen('bclri',base = base, shamt='100010'),'bclri', 1), # RV32 prohibits this instr
+        (func_gen('bext', base = base),'bext', 0),
+        (func_gen('bexti',shamt='000001', base = base),'bexti', 1),
+        (func_gen('bexti',shamt='100001', base = base),'bexti', 1), # RV32 prohibits this instr
+        (func_gen('binv',base = base),'binv', 0),
+        (func_gen('binvi',shamt='000101', base = base),'binvi', 1),
+        (func_gen('binvi',shamt='100101', base = base),'binvi', 1), # RV32 prohibits this instr
+        (func_gen('bset', base = base),'bset', 0),
+        (func_gen('bseti',shamt='000100', base = base),'bseti', 1),
+        (func_gen('bseti',shamt='100100', base = base),'bseti', 1), # RV32 prohibits this instr
+        (func_gen('sextb', base = base),'sextb', 1),
+        (func_gen('sexth', base = base),'sexth', 1),
+        (func_gen('xnor', base = base),'xnor', 0),
+        (func_gen('zexth',base=base),'zexth', 1),
+        (func_gen('clmul', base = base),'clmul', 0),
+        (func_gen('clmulh', base = base),'clmulh', 0),
+        (func_gen('clmulr', base = base),'clmulr', 0),
+        (func_gen('adduw'),'adduw', 0),
+        (func_gen('andn'), 'andn', 0),
+        (func_gen('clz'), 'clz', 1),
+        (func_gen('clzw'), 'clzw', 1),
+        (func_gen('cpop'), 'cpop', 1),
+        (func_gen('cpopw'), 'cpopw', 1),
+        (func_gen('ctz'), 'ctz', 1),
+        (func_gen('ctzw'), 'ctzw', 1),
+        (func_gen('max'), 'max', 0),
+        (func_gen('min'), 'min', 0),
+        (func_gen('maxu'), 'maxu', 0),     
+        (func_gen('minu'), 'minu', 0),
+        (func_gen('orcb'), 'orcb', 1),
+        (func_gen('orn'), 'orn', 0),
+        (func_gen('rev8', base='RV64'), 'rev8', 1),
+        (func_gen('rol'), 'rol', 0),
+        (func_gen('rolw'), 'rolw', 0),
+        (func_gen('ror'), 'ror', 0),
+        (func_gen('rori', '111111'), 'rori', 1),
+        (func_gen('rori', '011111'), 'rori', 1),
+        (func_gen('rori', '000001'), 'rori', 1),
+        (func_gen('rorw'), 'rorw', 0),
+        (func_gen('roriw', '000001'), 'roriw', 1),
+        (func_gen('roriw', '011111'), 'roriw', 1),
+        (func_gen('roriw', '000101'), 'roriw', 1),
+        (func_gen('roriw', '000000'), 'roriw', 1),
+        (func_gen('sh1add'),'sh1add',0),
+        (func_gen('sh1adduw'),'sh1adduw',0),
+        (func_gen('sh2add'),'sh2add',0),
+        (func_gen('sh2adduw'),'sh2adduw',0),
+        (func_gen('sh3add'),'sh3add',0),
+        (func_gen('sh3adduw'),'sh3adduw',0),
+        (func_gen('slliuw','000000'),'slliuw',1),
+        (func_gen('slliuw','111111'),'slliuw',1),
+        (func_gen('slliuw','100000'),'slliuw',1),
+        (func_gen('slliuw','000101'),'slliuw',1)
         # # (func_gen('yukta'),'yukta', 0),
         # (func_gen('yuktai',shamt='000010'),'yuktai', 1),
     ])
@@ -371,6 +978,6 @@ elif base == 'RV64':
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 
 #for each instruction below line generates 10 test vectors, can change to different no.
-tf.add_option('num_of_tests',[0])
+tf.add_option('num_of_tests',[10])
 tf.generate_tests()
 
