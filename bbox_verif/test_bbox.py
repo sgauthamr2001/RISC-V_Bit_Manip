@@ -207,15 +207,15 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
     dut._log.info("***************************************************************")
     dut._log.info("------------- Custom Test %r of RV%d starts --------------" %(instr_name,XLEN))
 
-    """
-    Based on the instruction type the corresponding corner cases
-    have been identified. These are appended to the list ctests, 
-    which has been used for testing along with random tests. The 
-    corner cases mostly correspond to largest and smallest vals,
-    cases which might lead to faulty extension, checking if only 
-    log2(XLEN) bits are being considered etc. More of them could 
-    be added by appending to ctests as tuple (rs1,rs2).
-    """
+    # """
+    # Based on the instruction type the corresponding corner cases
+    # have been identified. These are appended to the list ctests, 
+    # which has been used for testing along with random tests. The 
+    # corner cases mostly correspond to largest and smallest vals,
+    # cases which might lead to faulty extension, checking if only 
+    # log2(XLEN) bits are being considered etc. More of them could 
+    # be added by appending to ctests as tuple (rs1,rs2).
+    # """
 
     ctests = []
 
