@@ -504,4 +504,3 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     """
 
     return valid+result
-
