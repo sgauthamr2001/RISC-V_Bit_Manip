@@ -275,545 +275,216 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
         ctests.append((2**(XLEN//2) - 1, 2**(XLEN//2) - 1))
         ctests.append(((2**XLEN - 1)//3, 2**XLEN - 1))
 
-    if(len(ctests) > 0):
-        for test in ctests:
-            rs1 = test[0]
-            rs2 = test[1]
-            rm_result = bbox_rm(instr, rs1, rs2, XLEN)
-            await input_driver(dut, instr, rs1, rs2, single_opd)
-            dut_result = await output_monitor(dut)
-            await scoreboard(dut, dut_result, rm_result)
-        dut._log.info("------------- Custom Test %r of RV%d ends ----------------" %(instr_name,XLEN))
-        dut._log.info("*******************************************************")
-
-
     if(instr_name == 'adduw'):
-        
-        # Test vectors for add.uw 
-        # 1) Checks zero extension of rs1 and other cases
+        ctests.append((2**32 - 1,0)) 
+        ctests.append((2**32 - 1,1))
+        ctests.append((2**32 - 1,2**64 - 1))
+        ctests.append(((2**32-1) << 31,1))
 
-        rs1_test = []
-        rs2_test = []
-        
-        rs1_test.append(2**32 - 1) 
-        rs2_test.append(0)
-
-        rs1_test.append(2**32 - 1)
-        rs2_test.append(1)
-
-        rs1_test.append(2**32 - 1)
-        rs2_test.append(2**64 - 1)
-
-        rs1_test.append((2**32-1) << 31)
-        rs2_test.append(1)
-    
     elif(instr_name == 'andn'):
+        ctests.append((0,0))
+        ctests.append((2**XLEN - 1,2**XLEN - 1))
+        ctests.append((2**XLEN - 1,0))
+        ctests.append((random.randint(0,(2**XLEN)-1),random.randint(0,(2**XLEN)-1)))
 
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)
-        rs2_test.append(0)
-
-        rs1_test.append(2**XLEN - 1)
-        rs2_test.append(2**XLEN - 1)
-
-        rs1_test.append(2**XLEN - 1)
-        rs2_test.append(0)
-
-        rs1_test.append(random.randint(0,(2**XLEN)-1))
-        rs2_test.append(random.randint(0,(2**XLEN)-1))           
-    
     elif(instr_name == 'clz'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**XLEN-1)
-        rs2_test.append(0)                
-
-        rs1_test.append(2**(XLEN - 1))
-        rs2_test.append(0)            
-
-        rs1_test.append(0)
-        rs2_test.append(0)            
-
+        ctests.append((2**XLEN-1,0))       
+        ctests.append((2**(XLEN - 1),0))
+        ctests.append((0,0))           
         val = '00000000000000000001010101010101'
-        rs1_test.append(int(val,2))
-        rs2_test.append(0)           
-
+        ctests.append((int(val,2),0))
+    
     elif(instr_name == 'clzw'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)
-        rs2_test.append(0)                
-
+        ctests.append((0,0))          
         val = 2**(64) - 2**(32)
-        rs1_test.append(val)
-        rs2_test.append(0)    
-
+        ctests.append((val,0))
         val = 2**(64) - 2**(31)
-        rs1_test.append(val)
-        rs2_test.append(0)            
-
+        ctests.append((val,0))
         val = 2**(51) - 2**(32) + 2**(18) - 1
-        rs1_test.append(val)
-        rs2_test.append(0)   
+        ctests.append((val,0)) 
 
     elif(instr_name == 'cpop'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)
-        rs2_test.append(0)                
-
-        rs1_test.append(2**(XLEN) - 1)
-        rs2_test.append(0)    
-
-        rs1_test.append(1)
-        rs2_test.append(0)     
-               
+        ctests.append((0,0))               
+        ctests.append((2**(XLEN) - 1,0))  
+        ctests.append((1,0))
         val = '01010101010101010101010101010101'
-        rs1_test.append(int(val, 2))
-        rs2_test.append(0)   
+        ctests.append((int(val, 2),0))
 
     elif(instr_name == 'cpopw'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(64) - 2**(32))
-        rs2_test.append(0)                
-
-        rs1_test.append(2**(64) - 2**(30))
-        rs2_test.append(0)    
-
-        rs1_test.append(2**(64) - 1)
-        rs2_test.append(0)     
-               
-        rs1_test.append(0)
-        rs2_test.append(0)  
+        ctests.append((2**(64) - 2**(32),0))
+        ctests.append((2**(64) - 2**(30),0))
+        ctests.append((2**(64) - 1,0))
+        ctests.append((0,0))
 
     elif(instr_name == 'ctz'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)
-        rs2_test.append(0)                
-
-        rs1_test.append(2**(XLEN) - 1)
-        rs2_test.append(0)    
-
+        ctests.append((0,0))
+        ctests.append((2**(XLEN) - 1,0))
         if(XLEN == 64):
-            rs1_test.append(2**(64) - 2**(32))
-            rs2_test.append(0)     
+            ctests.append((2**(64) - 2**(32),0)) 
         else:
-            rs1_test.append(2**(32) - 2**(16))
-            rs2_test.append(0) 
-       
-        rs1_test.append(2**8)
-        rs2_test.append(0)   
-    
+            ctests.append((2**(32) - 2**(16),0))
+        ctests.append((2**8,0))
+
     elif(instr_name == 'ctzw'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)
-        rs2_test.append(0)                
-
-        rs1_test.append(2**(XLEN) - 1)
-        rs2_test.append(0)    
-
-        rs1_test.append(2**(64) - 2**(35))
-        rs2_test.append(0)     
-        
-        rs1_test.append(2**(64) - 2**(28))
-        rs2_test.append(0)   
+        ctests.append((0,0))                
+        ctests.append((2**(XLEN) - 1,0))
+        ctests.append((2**(64) - 2**(35),0))
+        ctests.append((2**(64) - 2**(28),0))  
 
     elif(instr_name == 'max'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(-(2**(XLEN-1)))
-        rs2_test.append((2**(XLEN-1))-1)                
-
-        rs1_test.append(-1)
-        rs2_test.append(200)    
-
-        rs1_test.append(-(2**(XLEN-1)))
-        rs2_test.append(-1)     
-        
-        rs1_test.append(-1)
-        rs2_test.append((2**(XLEN-1))-1)   
+        ctests.append((-(2**(XLEN-1)),(2**(XLEN-1))-1))
+        ctests.append((-1,200))
+        ctests.append((-(2**(XLEN-1)),-1))
+        ctests.append((-1,(2**(XLEN-1))-1))
 
     elif(instr_name == 'min'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(-(2**(XLEN-1)))
-        rs2_test.append((2**(XLEN-1))-1)                
-
-        rs1_test.append(-1)
-        rs2_test.append(200)    
-
-        rs1_test.append(-(2**(XLEN-1)))
-        rs2_test.append(-1)     
-        
-        rs1_test.append(-1)
-        rs2_test.append((2**(XLEN-1))-1)   
+        ctests.append((-(2**(XLEN-1)),(2**(XLEN-1))-1))
+        ctests.append((-1,200))
+        ctests.append((-(2**(XLEN-1)),-1))
+        ctests.append((-1,(2**(XLEN-1))-1))
 
     elif(instr_name == 'maxu'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)
-        rs2_test.append((2**XLEN)-1)          
-
-        rs1_test.append(2**(XLEN-1))   
-        rs2_test.append((2**XLEN)-1)    
-
-        rs1_test.append((2**(XLEN-1)))
-        rs2_test.append(1)     
-        
-        rs1_test.append((2**(XLEN-1)))
-        rs2_test.append((2**(XLEN-1))-1)   
+        ctests.append((0,(2**XLEN)-1))
+        ctests.append((2**(XLEN-1),(2**XLEN)-1))
+        ctests.append(((2**(XLEN-1)),1))
+        ctests.append(((2**(XLEN-1)),(2**(XLEN-1))-1))
 
     elif(instr_name == 'minu'):
+        ctests.append((0,(2**XLEN)-1))
+        ctests.append((2**(XLEN-1),(2**XLEN)-1))
+        ctests.append(((2**(XLEN-1)),1))
+        ctests.append(((2**(XLEN-1)),(2**(XLEN-1))-1))
 
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)
-        rs2_test.append((2**XLEN)-1)          
-
-        rs1_test.append(2**(XLEN-1))   
-        rs2_test.append((2**XLEN)-1)    
-
-        rs1_test.append((2**(XLEN-1)))
-        rs2_test.append(1)     
-        
-        rs1_test.append((2**(XLEN-1)))
-        rs2_test.append((2**(XLEN-1))-1)  
-    
     elif(instr_name == 'orcb'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(XLEN-1) + 2**(XLEN - 17))
-        rs2_test.append(48)       
-
-        rs1_test.append(2**(XLEN-9) + 2**(XLEN - 25))
-        rs2_test.append(35)
-
+        ctests.append((2**(XLEN-1) + 2**(XLEN - 17),48))    
+        ctests.append((2**(XLEN-9) + 2**(XLEN - 25),35))
         if(XLEN == 64):
-            # rs1_test.append(2**(64) - 1)
-            rs1_test.append(2**(XLEN-33) + 2**(XLEN - 49))
-            rs2_test.append(10)
-
-            # rs1_test.append(2**(XLEN-41)+ 2**(XLEN - 57))
-            rs1_test.append(0)
-            rs2_test.append(10)
-
+            # ctests.append(2**(64) - 1)
+            ctests.append((2**(XLEN-33) + 2**(XLEN - 49),10))
+            # ctests.append(2**(XLEN-41)+ 2**(XLEN - 57))
+            ctests.append((0,0))
         else: 
-            rs1_test.append(0)
-            rs2_test.append(10)
-
-            rs1_test.append(2**(32) - 1)
-            rs2_test.append(10)
+            ctests.append((0,10))
+            ctests.append((2**(32) - 1,10))
 
     elif(instr_name == 'orn'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)       
-        rs2_test.append(2**(XLEN) - 2)
-
-        rs1_test.append(1)
-        rs2_test.append(0)
-
-        rs1_test.append(0)
-        rs2_test.append(1)
-
-        rs1_test.append(64)
-        rs2_test.append(2**(XLEN) - 1)
+        ctests.append((0,2**(XLEN) - 2))       
+        ctests.append((1,0))
+        ctests.append((0,1))
+        ctests.append((64,2**(XLEN) - 1))
 
     elif(instr_name == 'rev8'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(0)       
-        rs2_test.append(0)
-
-        rs1_test.append(2**(XLEN) - 1)
-        rs2_test.append(0)
-
+        ctests.append((0,0))       
+        ctests.append((2**(XLEN) - 1,0))
         if(XLEN == 64):
-            rs1_test.append(2**(64) - 2**(32))
-            rs2_test.append(0)
+            ctests.append((2**(64) - 2**(32),0))
         else:
-            rs1_test.append(2**(32) - 2**(16))
-            rs2_test.append(0) 
-
-        rs1_test.append(2**(32) - 2**(24))
-        rs2_test.append(0)
+            ctests.append((2**(32) - 2**(16),0))
+        ctests.append((2**(32) - 2**(24),0))
 
     elif(instr_name == 'rol'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(XLEN-1) + 1)
-        rs2_test.append(3)                
-
-        rs1_test.append(2**(XLEN - 1))
-        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
-
-        rs1_test.append(2**(XLEN - 1))
+        ctests.append((2**(XLEN-1) + 1,3))               
+        ctests.append((2**(XLEN - 1),2**7 - 1))       # Checking if only log(XLEN) bits are being considered 
 
         if(XLEN == 64):
             val = '00111000011'
-            rs2_test.append(int(val,2))            
+            ctests.append((2**(XLEN - 1),int(val,2)))
         else: 
             val = '00111100011'
-            rs2_test.append(int(val,2))   
+            ctests.append((2**(XLEN - 1),int(val,2)))
 
-        rs1_test.append(2**(XLEN - 1))
-        rs2_test.append(0)  
+        ctests.append((2**(XLEN - 1),0))
 
     elif(instr_name == 'rolw'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(33) - 2**(4))
-        rs2_test.append(3)                
-
-        rs1_test.append(1)
-        rs2_test.append(2**6 - 1)         
-
-        rs1_test.append(2**(31))
+        ctests.append((2**(33) - 2**(4),3))
+        ctests.append((1,2**6-1))
         val = '00111100011'
-        rs2_test.append(int(val,2))   
-
-        rs1_test.append(2**(31))
-        rs2_test.append(0) 
+        ctests.append((2**(31),int(val,2))) 
+        ctests.append((2**(31),0))
 
     elif(instr_name == 'ror'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(XLEN-1) + 1)
-        rs2_test.append(3)                
-
-        rs1_test.append(2**(XLEN - 1))
-        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
-
-        rs1_test.append(2**(XLEN - 1))
+        ctests.append((2**(XLEN-1) + 1,3))               
+        ctests.append((2**(XLEN - 1),2**7 - 1))       # Checking if only log(XLEN) bits are being considered 
 
         if(XLEN == 64):
             val = '00111000011'
-            rs2_test.append(int(val,2))            
+            ctests.append((2**(XLEN - 1),int(val,2)))
         else: 
             val = '00111100011'
-            rs2_test.append(int(val,2))   
+            ctests.append((2**(XLEN - 1),int(val,2)))
 
-        rs1_test.append(2**(XLEN - 1))
-        rs2_test.append(0)   
+        ctests.append((2**(XLEN - 1),0))
 
     elif(instr_name == 'rori'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(XLEN-1) + 1)
-        rs2_test.append(3)                
-
-        rs1_test.append(2**(XLEN - 1))
-        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
-
-        rs1_test.append(2**(XLEN-1) + 2**(XLEN - 17))
-        rs2_test.append(0)            
-
-        rs1_test.append(1)
-        rs2_test.append(0) 
+        ctests.append((2**(XLEN-1) + 1,3))
+        ctests.append((2**(XLEN - 1),2**7 - 1)) # Checking if only log(XLEN) bits are being considered 
+        ctests.append((2**(XLEN-1) + 2**(XLEN - 17),0))
+        ctests.append((1,0))
 
     elif(instr_name == 'rorw'): 
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(33) - 2**(4))
-        rs2_test.append(5)                
-
-        rs1_test.append(1)
-        rs2_test.append(2**6 - 1)         
-        
-        rs1_test.append(2**(33) - 2**(4))
+        ctests.append((2**(33) - 2**(4),5)) 
+        ctests.append((1,2**6 - 1))
         val = '00111100011'
-        rs2_test.append(int(val,2))   
-
-        rs1_test.append(2**(31))
-        rs2_test.append(0) 
+        ctests.append((2**(33) - 2**(4),int(val,2)))
+        ctests.append((2**(31),0))
 
     elif(instr_name == 'roriw'): 
+        ctests.append((2**(45) - 2**(4),5))
+        ctests.append((2**(32) - 2,6))
+        ctests.append((2**(30) - 1,7))
+        ctests.append((1,8))
 
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**(45) - 2**(4))
-        rs2_test.append(5)                
-
-        rs1_test.append(2**(32) - 2)
-        rs2_test.append(6)         
-        
-        rs1_test.append(2**(30) - 1)
-        rs2_test.append(7)    
-
-        rs1_test.append(1)
-        rs2_test.append(8)
-    
     elif(instr_name == 'sh1add'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**XLEN-1)
-        rs2_test.append(2**XLEN-1)
-
-        rs1_test.append(0)
-        rs2_test.append(2**XLEN-1)
-
-        rs1_test.append(2**XLEN-1)
-        rs2_test.append(0)
-
-        rs1_test.append(0)
-        rs2_test.append(0)
+        ctests.append((2**XLEN-1,2**XLEN-1))
+        ctests.append((0,2**XLEN-1))
+        ctests.append((2**XLEN-1,0))
+        ctests.append((0,0))
 
     elif(instr_name == 'sh1adduw'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**64-1)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**64-2**32)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**32-1)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**64-1)
-        rs2_test.append(1)
+        ctests.append((2**64-1,2**64-1))
+        ctests.append((2**64-2**32,2**64-1))
+        ctests.append((2**32-1,2**64-1))
+        ctests.append((2**64-1,1))
 
     elif(instr_name == 'sh2add'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**XLEN-1)
-        rs2_test.append(2**XLEN-1)
-
-        rs1_test.append(0)
-        rs2_test.append(2**XLEN-1)
-
-        rs1_test.append(2**XLEN-1)
-        rs2_test.append(0)
-
-        rs1_test.append(0)
-        rs2_test.append(0)
+        ctests.append((2**XLEN-1,2**XLEN-1))
+        ctests.append((0,2**XLEN-1))
+        ctests.append((2**XLEN-1,0))
+        ctests.append((0,0))
 
     elif(instr_name == 'sh2adduw'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**64-1)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**64-2**32)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**32-1)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**64-1)
-        rs2_test.append(1)
+        ctests.append((2**64-1,2**64-1))
+        ctests.append((2**64-2**32,2**64-1))
+        ctests.append((2**32-1, 2**64-1))
+        ctests.append((2**64-1,1))
     
     elif(instr_name == 'sh3add'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**XLEN-1)
-        rs2_test.append(2**XLEN-1)
-
-        rs1_test.append(0)
-        rs2_test.append(2**XLEN-1)
-
-        rs1_test.append(2**XLEN-1)
-        rs2_test.append(0)
-
-        rs1_test.append(0)
-        rs2_test.append(0)
+        ctests.append((2**XLEN-1,2**XLEN-1))
+        ctests.append((0,2**XLEN-1))
+        ctests.append((2**XLEN-1,0))
+        ctests.append((0,0))
 
     elif(instr_name == 'sh3adduw'):
-
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**64-1)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**64-2**32)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**32-1)
-        rs2_test.append(2**64-1)
-
-        rs1_test.append(2**64-1)
-        rs2_test.append(1)
+        ctests.append((2**64-1,2**64-1))
+        ctests.append((2**64-2**32,2**64-1))
+        ctests.append((2**32-1, 2**64-1))
+        ctests.append((2**64-1,1))
     
     elif(instr_name == 'slliuw'):
+        ctests.append((2**64-1,0))
+        ctests.append((2**64-2**32,0))
+        ctests.append((2**32-1,0))
+        ctests.append((2**64-2**32+1))
 
-        rs1_test = []
-        rs2_test = []
-
-        rs1_test.append(2**64-1)
-        rs2_test.append(0)
-
-        rs1_test.append(2**64-2**32)
-        rs2_test.append(0)
-
-        rs1_test.append(2**32-1)
-        rs2_test.append(0)
-
-        rs1_test.append(2**64-2**32+1)
-        rs2_test.append(0)       
-
-    if(len(ctests) == 0):
-        for i in range(len(rs1_test)):
-            rs1 = rs1_test[i]
-            rs2 = rs2_test[i]
-            rm_result = bbox_rm(instr, rs1, rs2, XLEN)
-            await input_driver(dut, instr, rs1, rs2, single_opd)
-            dut_result = await output_monitor(dut)
-        
-            await scoreboard(dut, dut_result, rm_result)
-        dut._log.info("------------- Custom Test %r of RV%d ends ----------------" %(instr_name,XLEN))
-        dut._log.info("*******************************************************")
+    for test in ctests:
+        rs1 = test[0]
+        rs2 = test[1]
+        rm_result = bbox_rm(instr, rs1, rs2, XLEN)
+        await input_driver(dut, instr, rs1, rs2, single_opd)
+        dut_result = await output_monitor(dut)
+        await scoreboard(dut, dut_result, rm_result)
+    dut._log.info("------------- Custom Test %r of RV%d ends ----------------" %(instr_name,XLEN))
+    dut._log.info("*******************************************************")
 
     dut._log.info("------------- Random Test %r of RV%d starts --------------" %(instr_name,XLEN))
     dut._log.info("*******************************************************")
@@ -827,7 +498,7 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
 
         #     # Test vectors for add.uw 
         #     # 1) Checks zero extension of rs1
-        #     rs1 = rs1_test[i - 10]
+        #     rs1 = ctests[i - 10]
         #     rs2 = rs2_test[i - 10]
 
         rm_result = bbox_rm(instr, rs1, rs2, XLEN)
