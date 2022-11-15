@@ -50,6 +50,14 @@ they have been set to zero in the instruction encoding and shall be compared
 with '?' in Bluespec. Therefore, when actual instruction is passed, the Blue-
 -spec works since these fields are not used for decoding. Similar decoding has
 been performed in the bbox_ref_model.py. 
+
+Inputs:
+instr_name: Name of the Instruction
+shamt: Immediate value (Optional input, default = 0), will be read for Immediate type instr only
+base : RV32 or RV64 (Default)
+
+Output: 
+32 bit RISCV encoding for instruction 
 """
 
 def func_gen(instr_name, shamt='000000', base="RV64"):
@@ -479,22 +487,22 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
 
     # 35, sh1add
     if(instr_name == 'sh1add'):
-        ctests.append((2**XLEN-1,2**XLEN-1))
-        ctests.append((0,2**XLEN-1))
-        ctests.append((2**XLEN-1,0))
-        ctests.append((0,0))
+        ctests.append((2**XLEN-1,1))
+        ctests.append((2**XLEN-1,3))
+        ctests.append((2**XLEN-2,3))
+        ctests.append((2**(XLEN//2) -1,1))
     
     # 36, sh1adduw
     if(instr_name == 'sh1adduw'):
-        ctests.append((2**64-1,2**64-1))
+        ctests.append((2**64-1,1))
         ctests.append((2**64-2**32,2**64-1))
         ctests.append((2**32-1,2**64-1))
-        ctests.append((2**64-1,1))
+        ctests.append((2**64-1,0))
 
     # 37, sh2add
     if(instr_name == 'sh2add'):
-        ctests.append((2**XLEN-1,2**XLEN-1))
-        ctests.append((0,2**XLEN-1))
+        ctests.append((2**XLEN-1,3))
+        ctests.append((2**XLEN-1,5))
         ctests.append((2**XLEN-1,0))
         ctests.append((0,0))
     
@@ -507,10 +515,10 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
 
     # 39, sh3add
     if(instr_name == 'sh3add'):
-        ctests.append((2**XLEN-1,2**XLEN-1))
-        ctests.append((0,2**XLEN-1))
+        ctests.append((2**XLEN-1,7))
+        ctests.append((2**XLEN-1,8))
         ctests.append((2**XLEN-1,0))
-        ctests.append((0,0))
+        ctests.append((1,1))
 
     # 40, sh3adduw
     if(instr_name == 'sh3adduw'):
@@ -602,45 +610,27 @@ if base == 'RV32':
         (func_gen('clmul', base = base),'clmul', 0),
         (func_gen('clmulh', base = base),'clmulh', 0),
         (func_gen('clmulr', base = base),'clmulr', 0),
-        #(func_gen('adduw', base = base),'adduw', 0),
         (func_gen('andn', base = base), 'andn', 0),
         (func_gen('clz', base = base), 'clz', 1),
-        # (func_gen('clzw', base = base), 'clzw', 1),
         (func_gen('cpop', base = base), 'cpop', 1),
-        # (func_gen('cpopw', base = base), 'cpopw', 1),
         (func_gen('ctz', base = base), 'ctz', 1),
-        # (func_gen('ctzw', base = base), 'ctzw', 1),
         (func_gen('max', base = base), 'max', 0),
         (func_gen('min', base = base), 'min', 0),
-        # (func_gen('maxu', base = base), 'maxu', 0),     
-        # (func_gen('minu', base = base), 'minu', 0),
         (func_gen('orcb', base = base), 'orcb', 1),
         (func_gen('orn', base = base), 'orn', 0),
         (func_gen('rev8', base=base), 'rev8', 1),
         (func_gen('rol', base = base), 'rol', 0),
-        # (func_gen('rolw', base = base), 'rolw', 0),
         (func_gen('ror', base = base), 'ror', 0),
         (func_gen('rori', '111111', base = base), 'rori', 1),
         (func_gen('rori', '011111', base = base), 'rori', 1),
         (func_gen('rori', '000001', base = base), 'rori', 1),
-        # (func_gen('rorw', base = base), 'rorw', 0),
-        # (func_gen('roriw', '000001', base = base), 'roriw', 1),
-        # (func_gen('roriw', '011111', base = base), 'roriw', 1),
-        # (func_gen('roriw', '000101', base = base), 'roriw', 1),
-        # (func_gen('roriw', '000000', base = base), 'roriw', 1),
         (func_gen('sh1add', base = base),'sh1add',0),
-        # (func_gen('sh1adduw', base = base),'sh1adduw',0),
         (func_gen('sh2add', base = base),'sh2add',0),
-        # (func_gen('sh2adduw', base = base),'sh2adduw',0),
-        (func_gen('sh3add', base = base),'sh3add',0),
-        #(func_gen('sh3adduw', base = base),'sh3adduw',0),
-        # (func_gen('slliuw','000000', base = base),'slliuw',1),
-        # (func_gen('slliuw','111111', base = base),'slliuw',1),
-        # (func_gen('slliuw','100000', base = base),'slliuw',1),
-        # (func_gen('slliuw','000101', base = base),'slliuw',1)
+        (func_gen('sh3add', base = base),'sh3add',0)
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
-    ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
+    #if immediate type instr then provide shamt argument for func_gen else takes default as zero
+    #To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(func_gen(addn,base=base), 'addn', 0),(...)])
 
 #generates tests for instructions of RV64
 elif base == 'RV64':
@@ -704,8 +694,9 @@ elif base == 'RV64':
         (func_gen('slliuw','000101'),'slliuw',1)
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
-    ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
+    #if immediate type instr then provide shamt argument for func_gen else takes default as zero
+    #To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(func_gen(addn), 'addn', 0),(...)])
 
 #for each instruction below line generates 10 test vectors, can change to different no.
-tf.add_option('num_of_tests',[10])
+tf.add_option('num_of_tests',[25])
 tf.generate_tests()
