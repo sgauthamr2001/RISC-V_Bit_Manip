@@ -48,27 +48,32 @@ function BBoxOutput fn_compute(BBoxInput inp);
         result = fn_adduw(inp.rs1, inp.rs2);
         valid = True;
       end
-    `endif
+    `endif 
+
     //ANDN
     `ANDN: begin
       result = fn_andn(inp.rs1, inp.rs2);
       valid = True;
     end
+
     //BLCR 
     `BCLR: begin
       result = fn_bclr(inp.rs1, inp.rs2);
       valid = True;
     end
+
     //BEXT
     `BEXT: begin
       result = fn_bext(inp.rs1, inp.rs2);
       valid = True;
     end
+
     //BINV
     `BINV: begin
       result = fn_binv(inp.rs1, inp.rs2);
       valid = True;
     end
+
     //BSET
     `BSET: begin
       result = fn_bset(inp.rs1, inp.rs2);
@@ -176,21 +181,25 @@ function BBoxOutput fn_compute(BBoxInput inp);
       result = fn_clmul(inp.rs1, inp.rs2);
       valid = True;
     end
+
     // CLMULH
     `CLMULH : begin
       result = fn_clmulh(inp.rs1, inp.rs2);
       valid = True;
     end
+
     // CLMULR
     `CLMULR : begin
       result = fn_clmulr(inp.rs1, inp.rs2);
       valid = True;
     end
+
     // CLZ
     `CLZ : begin
       result = fn_clz(inp.rs1);
       valid = True;
     end
+
     // CLZW is defined in RV64 mode only
     `ifdef RV64
     `CLZW : begin
@@ -198,11 +207,13 @@ function BBoxOutput fn_compute(BBoxInput inp);
         valid = True;
     end
     `endif
+
     // CPOP
     `CPOP : begin
       result = fn_cpop(inp.rs1);
       valid = True;
     end
+
     // CPOPW is defined in RV64 mode only
     `ifdef RV64
     `CPOPW : begin
@@ -210,11 +221,13 @@ function BBoxOutput fn_compute(BBoxInput inp);
         valid = True;
     end
     `endif
+
     // CTZ
     `CTZ : begin
       result = fn_ctz(inp.rs1);
       valid = True;
     end
+
     // CTZW is defined in RV64 mode only
     `ifdef RV64
     `CTZW : begin
@@ -222,31 +235,37 @@ function BBoxOutput fn_compute(BBoxInput inp);
         valid = True;
     end
     `endif
+
     // MAX
     `MAX : begin
       result = fn_max(inp.rs1, inp.rs2);
       valid = True;
     end
+
     // MAXU
     `MAXU : begin
       result = fn_maxu(inp.rs1, inp.rs2);
       valid = True;
     end
+
     // MIN
     `MIN : begin
       result = fn_min(inp.rs1, inp.rs2);
       valid = True;
     end
+    
     // MINU
     `MINU : begin
       result = fn_minu(inp.rs1, inp.rs2);
       valid = True;
     end
+
     // ORCB
     `ORCB : begin
       result = fn_orcb(inp.rs1);
       valid = True;
     end
+
     // ORN
     `ORN : begin
       result = fn_orn(inp.rs1, inp.rs2);
@@ -323,7 +342,6 @@ function BBoxOutput fn_compute(BBoxInput inp);
           valid = True;
       end
     `endif
-
 
     `ifdef RV64
     // RORIW defined in RV64 mode
