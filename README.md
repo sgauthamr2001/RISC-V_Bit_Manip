@@ -26,7 +26,7 @@ This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/
 
 ### Interfacing 
 
-<div align="justify"> The inputs and outputs to the design under test are shown as below. In the actual hardware the instruction is passed with appropriate opcodes. To account for the same the structure has been incorporated in 'src/bbox.defines' where the instruction is encoded based on the operation to be performed. Based on the decoded instruction, a result is computed using 'src/compute.bsv' which invokes the corresponding Bluespec extension function. The result is returned to bbox.bsv. In the Python test bench, since the register contents are being passed along side, these parts of the insrtuction shall be passed as 0. The whole instrucion is generated based on the required opcode, along with embedding the shamt value passed by user to get a 32-bit instruction for testing purposes. The func_gen call in the 'src/test_bbox.py' serves this purpose of generating the instruction. This instruction is also passed to 'bbox_verif/bbox_ref_model.py', which gives out the result computed in Python and same is compared with result obtained through Bluespec for functional correctness. </div>
+<div align="justify"> The inputs and outputs to the design under test are shown as below. In the actual hardware the instruction is passed with appropriate opcodes. To account for the same the structure has been incorporated in 'src/bbox.defines' where the instruction is encoded based on the operation to be performed. Based on the decoded instruction, a result is computed using 'src/compute.bsv' which invokes the corresponding Bluespec extension function. The result is returned to bbox.bsv. In the Python test bench, since the register contents are being passed along side, these parts of the insrtuction shall be passed as 0. The whole instrucion is generated based on the required opcode, along with embedding the shamt value passed by user to get a 32-bit instruction for testing purposes. The func_gen call in the 'bbox_verif/test_bbox.py' serves this purpose of generating the instruction. This instruction is also passed to 'bbox_verif/bbox_ref_model.py', which gives out the result computed in Python and same is compared with result obtained through Bluespec for functional correctness. </div>
 
 | Name | I/O | Size |
 | --- | --- | --- |
@@ -42,6 +42,7 @@ This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/
 
 <div align="justify"> Make sure you have installed all the required tools as mentioned in docs/Tool_setup.pdf and the python environment is activated. To add custom test instrucions, 
 the list corresponding to respective instruction in 'bbox_verif/test_bbox.py' is to be appended and more details have been provided inside the file. Please make sure to change the BSCDEFINES to RV32 along with base in 'bbox_verif/test_bbox.py' to change the base. </div>
+-
 
 1. To just generate the verilog
 ```bash
