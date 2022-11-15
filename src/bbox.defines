@@ -8,8 +8,12 @@ Details: Has the macros used for instruction comparison
 --------------------------------------------------------------------------------------------------
 */
 
-// Add instruction macors here which can be used in the 
-// case statement for understandability and easy modifications.
+// Edited By: Bachotti Sai Krishna Shanmukh EE19B009
+// Opcodes for all Bit Manip instructions are defined below
+// Instructions marked in asterisk(*) have different opcodes in RV32 and RV64 mode
+// Dont cares are used and compute.bsv takes care by checking that one different Bit in if-else
+// shamt[5] = 1 is reserved in RV32 Immediate type instructions while allowed in RV64 mode.
+// Hence, shamt[5] is also marked don't care and separately treated in compute.bsv using if-else 
 
 // 2.1
 `define ADDUW 32'b0000100??????????000?????0111011
