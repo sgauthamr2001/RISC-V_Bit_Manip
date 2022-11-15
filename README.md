@@ -1,7 +1,6 @@
 # BitManip Extension project
 
-This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/shakti/bboxStudents). The original README.md is made avaialble [here.](https://gitlab.com/sgauthamr2001/bbox/-/blob/master/README_source.md)
-
+This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/shakti/bboxStudents). 
 
 ### Bit-Manipulation Extensions
 
@@ -40,7 +39,8 @@ This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/
 
 
 ### Steps to run:
-Make sure you have installed all the required tools as mentioned in docs/Tool_setup.pdf and the python environment is activated.
+<div align="justify"> Make sure you have installed all the required tools as mentioned in docs/Tool_setup.pdf and the python environment is activated. To add custom test instrucions, 
+the list corresponding to respective instruction in 'bbox_verif/test_bbox.py' is to be appended and more instructions have been provided inside the file. </div> 
 
 1. To just generate the verilog
 ```bash
@@ -74,8 +74,11 @@ $ make clean_build
 	$ sudo apt install gtkwave
 ```    
 
-### Evaluation Criteria:
-- Design code (bsv) has to be documented with proper comments and design intent
-- Every team member should check-in their code contribution using their own GitLab id for individual evaluation
-- Verification code (python) has to be documented with proper comments providing the test case explanation
-- A final Report.md should be updated providing the steps to run the tests and the instructions implemented along with test run report.
+### Test Results: 
+- The results obtained for both random and custom testcases for RV64 (55 instead of 43 as tested for different values of shamt): 
+![image.png](./image.png)
+
+- The results obtained for both random and custom testcases for RV32 (36 instead of 32 as tested for different values of shamt): 
+
+![image-1.png](./image-1.png)
+
