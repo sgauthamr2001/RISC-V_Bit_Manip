@@ -642,8 +642,6 @@ elif base == 'RV64':
         (func_gen('slliuw','111111'),'slliuw',1),
         (func_gen('slliuw','100000'),'slliuw',1),
         (func_gen('slliuw','000101'),'slliuw',1)
-        # # (func_gen('yukta'),'yukta', 0),
-        # (func_gen('yuktai',shamt='000010'),'yuktai', 1),
     ])
     #if instruction has single operand, provide single_opd = 1 (please see below line).
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
