@@ -26,6 +26,7 @@ def sign_extend(value, bits):
 def bbox_rm(instr, rs1, rs2, XLEN):
 
     istr = bindigits(instr, 32)
+    print(len(istr))
     #istr = istr[::-1]
 
     ip1 = istr[0:7]
@@ -36,14 +37,18 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     ip6 = istr[25:32]
 
     print("IP1: ",ip1)
+    print("IP2: ",ip2)
     print("IP4: ",ip4)
     print("IP6: ",ip6)
 
-    # 1, adduw
+    # adduw
     if ((ip1 == '0000100') & (ip4 == '000') & (ip6 == '0111011')):
-        print("Testing instruction adduw")
-        res = rs2 + (rs1&(2**32 - 1))
-        valid = '1'
+        if(XLEN == 64):
+            res = rs2 + (rs1&(2**32 - 1))
+            valid = '1'
+        else:
+            res = 0
+            valid = '1'
     
     # 2, andn
     elif ((ip1 == '0100000') & (ip4 == '111') & (ip6 == '0110011')):
@@ -59,12 +64,15 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 4, bclri
     elif ((ip1[:-1] == '010010') & (ip4 == '001') & (ip6 == '0010011')):
-        print("Testing instruction bclri")
         if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
             valid = '1'
-        if(XLEN == 64): 
+        elif((XLEN == 32) & (ip1[-1] == '1')):
+            res = 0
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
+            valid = '1'
+        elif(XLEN == 64): 
             shamt = int(ip1[-1] + ip2, 2)
             res = (rs1 & ~(1 << (shamt & (XLEN - 1))))
             valid = '1'
@@ -76,11 +84,15 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 6, bexti
     elif ((ip1[:-1] == '010010') & (ip4 == '101') & (ip6 == '0010011')):
-        if(XLEN == 32 & ip1[-1] == 0):
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 >> (shamt & (XLEN - 1))) & 1
             valid = '1'
-        if(XLEN == 64): 
+        elif((XLEN == 32) & (ip1[-1] == '1')):
+            res = 0
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
+            valid = '1'
+        elif(XLEN == 64): 
             shamt = int(ip1[-1] + ip2, 2)
             res = (rs1 >> (shamt & (XLEN - 1))) & 1
             valid = '1'
@@ -92,11 +104,15 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 8, binvi
     elif ((ip1[:-1] == '011010') & (ip4 == '001') & (ip6 == '0010011')):
-        if(XLEN == 32 & ip1[-1] == 0):
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 ^ (1 << (shamt & (XLEN - 1))))
             valid = '1'
-        if(XLEN == 64):
+        elif((XLEN == 32) & (ip1[-1] == '1')):
+            res = 0
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
+            valid = '1'
+        elif(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
             res = (rs1 ^ (1 << (shamt & (XLEN - 1))))
             valid = '1'
@@ -108,11 +124,15 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 10, bseti
     elif ((ip1[:-1] == '001010') & (ip4 == '001') & (ip6 == '0010011')):
-        if(XLEN == 32 & ip1[-1] == 0):
+        if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 | (1 << (shamt & (XLEN - 1))))
             valid = '1'
-        if(XLEN == 64):
+        elif((XLEN == 32) & (ip1[-1] == '1')):
+            res = 0
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
+            valid = '1'
+        elif(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
             res = (rs1 | (1 << (shamt & (XLEN - 1))))
             valid = '1'
@@ -122,18 +142,30 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         res = 0
         print("CLMUL Testing\n")
         for i in range(XLEN+1):
-            cond = (rs2 // (2**i)) % 2
+            cond = (rs2 >> i) % 2
             if(cond):
-                res = res ^ (rs1 * (2**i))
+                res = res ^ (rs1 << i)
         valid = '1'
 
     # 12, clmulh
     elif ((ip1 == '0000101') & (ip4 == '011') & (ip6 == '0110011')):
-        pass
+        res = 0
+        print("CLMULH Testing\n")
+        for i in range(1,XLEN+1):
+            cond = (rs2 >> i) % 2
+            if(cond):
+                res = res ^ (rs1 >> (XLEN - i))
+        valid = '1'
 
     # 13, clmulr
     elif ((ip1 == '0000101') & (ip4 == '010') & (ip6 == '0110011')):
-        pass
+        res = 0
+        print("CLMULR Testing\n")
+        for i in range(0,XLEN):
+            cond = (rs2 >> i) % 2
+            if(cond):
+                res = res ^ (rs1 >> (XLEN - i - 1))
+        valid = '1'
 
     # 14, clz
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00000')):
@@ -147,6 +179,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
                 res += 1
         valid = '1'
 
+
     # 15, clzw
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0011011') & (ip2 == '00000')):
         print("Testing instruction clzw")
@@ -159,6 +192,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
                     rs1 = (rs1 << 1)
                     res += 1
             valid = '1'
+
 
     # 16, cpop
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00010')):    
@@ -260,8 +294,8 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 26, rev8
     elif ((ip1[:-1] == '011010') & (ip4 == '101') & (ip6 == '0010011') & (ip2 == '11000')): 
+        print("REV8 is executing")
         if((XLEN == 32) & (ip1[-1] == '0')): 
-            print("Testing instruction rev8")
             res = 0 
             num_bytes = int(XLEN/8)
             for i in range(num_bytes):
@@ -269,7 +303,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
                 rs1 = rs1 >> 8
             valid = '1'
         if((XLEN == 64) & (ip1[-1] == '1')): 
-            print("Testing instruction rev8")
             res = 0 
             num_bytes = int(XLEN/8)
             for i in range(num_bytes):
@@ -314,17 +347,21 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 30, rori
     elif  ((ip1[:-1] == '011000') & (ip4 == '101') & (ip6 == '0010011')): 
-        print("Testing instruction rori")
         if((XLEN == 32) & (ip1[-1] == '0')):
             shamt = int(ip2, 2)
             res = (rs1 >> shamt) | ((rs1) << (XLEN - shamt))
             valid = '1'
-        if(XLEN == 64):
+        elif((XLEN == 32) & (ip1[-1] == '1')):
+            res = 0
+            print("*********************shamt[5] = 1 is reserved for RV32**********************")
+            valid = '1'
+        elif(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
             res = (rs1 >> shamt) | ((rs1) << (XLEN - shamt))
             valid = '1'
 
     # 31, roriw
+    # '0110000' + shamt + '00000' + '101' + '00000' + '0011011'
     elif ((ip1 == '0110000') & (ip4 == '101') & (ip6 == '0011011')): 
         if(XLEN == 64):
             print("Testing instruction roriw")
@@ -333,6 +370,10 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             res = (rs1 >> shamt) | ((rs1) << (32 - shamt))
             res = res & (4294967295)
             res = sign_extend(res, 32)
+            valid = '1'
+        elif(XLEN == 32):
+            res = 0
+            print("RORIW not defined in RV32 mode")
             valid = '1'
 
     # 32, rorw
@@ -344,6 +385,10 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             res = (rs1 >> shamt) | ((rs1) << (32 - shamt))
             res = res & (4294967295)
             res = sign_extend(res, 32)
+            valid = '1'
+        elif(XLEN == 32):
+            res = 0
+            print("RORW not defined in RV32 mode")
             valid = '1'
 
     # 33, sext.b 
@@ -376,6 +421,10 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         if(XLEN == 64):
             res = (rs2 + (rs1&(2**32 - 1))*2)&(2**64-1)
             valid = '1'
+        elif(XLEN == 32):
+            res = 0
+            print("SH1ADD.UW not defined in RV32 mode")
+            valid = '1'
 
     # 37, sh2add 
     elif ((ip1 == '0010000') & (ip4 == '100') & (ip6 == '0110011')): 
@@ -386,6 +435,10 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     elif ((ip1 == '0010000') & (ip4 == '100') & (ip6 == '0111011')): 
         if(XLEN == 64):
             res = (rs2 + (rs1&(2**32 - 1))*4)&(2**64-1)
+            valid = '1'
+        elif(XLEN == 32):
+            res = 0
+            print("SH2ADD.UW not defined in RV32 mode")
             valid = '1'
 
     # 39, sh3add
@@ -398,13 +451,22 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         if(XLEN == 64):
             res = (rs2 + (rs1&(2**32 - 1))*8)&(2**64-1)
             valid = '1'
+        elif(XLEN == 32):
+            res = 0
+            print("SH3ADD.UW not defined in RV32 mode")
+            valid = '1'
 
     # 41, slli.uw
     elif ((ip1[:-1] == '000010') & (ip4 == '001') & (ip6 == '0011011')): 
         if(XLEN == 64):
             shamt = int(ip1[-1] + ip2, 2)
             rs1 = rs1 & (4294967295)
-            rs1 = rs1 << shamt 
+            res = rs1 << shamt 
+            valid = '1'
+        elif(XLEN == 32):
+            res = 0
+            print("SLLI.UW not defined in RV32 mode")
+            valid = '1'
 
     # 42, xnor
     elif ((ip1 == '0100000') & (ip4 == '100') & (ip6 == '0110011')): 
@@ -412,12 +474,15 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         valid = '1'
 
     # 43, zext.h
-    elif ((ip1 == '0000100') & (ip4 == '100') & (ip2 == '00000')):
-        if(XLEN == 32 & ip6 == '0110011'):  
+    elif ((ip1 == '0000100') & (ip4 == '100')):
+        if((XLEN == 32) & (ip6 == '0110011')):  
             res = rs1 % (2**16)
             valid = '1'
-        if(XLEN == 64 & ip6 == '0111011'):
+        elif((XLEN == 64) & (ip6 == '0111011')):
             res = rs1 % (2**16)
+            valid = '1'
+        else:
+            res = 0
             valid = '1'
 
     ## logic for all other instr ends

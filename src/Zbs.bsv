@@ -17,6 +17,8 @@ Details: Holds the functions to implement single-bit operations to set, clear,
 function Bit#(XLEN) fn_bclr(Bit#(XLEN) rs1, Bit#(XLEN) rs2);
   Bit#(XLEN) one = 1;       
   return rs1 & ~(one << (rs2 & fromInteger(valueOf(XLEN) - valueOf(1))));
+  // valueOf converts numeric type to Integer type
+  // fromInteger converts Integer type to Bit type
 endfunction
 
 // Instruction: bclri
