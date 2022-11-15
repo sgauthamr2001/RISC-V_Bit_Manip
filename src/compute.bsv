@@ -280,6 +280,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
       end
     `endif
 
+    // ROL
     `ROL: begin
       result = fn_rol(inp.rs1, inp.rs2);
       valid = True;
@@ -293,6 +294,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
     end
     `endif
 
+    // ROR
     `ROR: begin
       result = fn_ror(inp.rs1, inp.rs2);
       valid = True;

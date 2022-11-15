@@ -488,11 +488,454 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
 
     dut._log.info("------------- Random Test %r of RV%d starts --------------" %(instr_name,XLEN))
     dut._log.info("*******************************************************")
+
+    print(instr_name)
+
+    if(instr_name == 'adduw'):
+        
+        # Test vectors for add.uw 
+        # 1) Checks zero extension of rs1 and other cases
+
+        rs1_test = []
+        rs2_test = []
+        
+        rs1_test.append(2**32 - 1) 
+        rs2_test.append(0)
+
+        rs1_test.append(2**32 - 1)
+        rs2_test.append(1)
+
+        rs1_test.append(2**32 - 1)
+        rs2_test.append(2**64 - 1)
+
+        rs1_test.append((2**32-1) << 31)
+        rs2_test.append(1)
+    
+    elif(instr_name == 'andn'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(2**XLEN - 1)
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(0)
+
+        rs1_test.append(random.randint(0,(2**XLEN)-1))
+        rs2_test.append(random.randint(0,(2**XLEN)-1))
+
+    elif(instr_name == 'bclr'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(3)                # Checks if a specific bit is being set 
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(2**5)            
+
+        rs1_test.append(0)
+        rs2_test.append(5)                # Checks if only set bits are cleared 
+
+    elif(instr_name == 'bclri'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**9-1)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**32 - 1)
+        rs2_test.append(0)            
+
+        rs1_test.append(2**XLEN - 1)
+        rs2_test.append(0)            
+
+        rs1_test.append(0)
+        rs2_test.append(0)           
+    
+    elif(instr_name == 'clz'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**XLEN-1)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(0)            
+
+        rs1_test.append(0)
+        rs2_test.append(0)            
+
+        val = '00000000000000000001010101010101'
+        rs1_test.append(int(val,2))
+        rs2_test.append(0)           
+
+    elif(instr_name == 'clzw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        val = 2**(64) - 2**(32)
+        rs1_test.append(val)
+        rs2_test.append(0)    
+
+        val = 2**(64) - 2**(31)
+        rs1_test.append(val)
+        rs2_test.append(0)            
+
+        val = 2**(51) - 2**(32) + 2**(18) - 1
+        rs1_test.append(val)
+        rs2_test.append(0)   
+
+    elif(instr_name == 'cpop'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)    
+
+        rs1_test.append(1)
+        rs2_test.append(0)     
+               
+        val = '01010101010101010101010101010101'
+        rs1_test.append(int(val, 2))
+        rs2_test.append(0)   
+
+    elif(instr_name == 'cpopw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(64) - 2**(32))
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(64) - 2**(30))
+        rs2_test.append(0)    
+
+        rs1_test.append(2**(64) - 1)
+        rs2_test.append(0)     
+               
+        rs1_test.append(0)
+        rs2_test.append(0)  
+
+    elif(instr_name == 'ctz'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)    
+
+        if(XLEN == 64):
+            rs1_test.append(2**(64) - 2**(32))
+            rs2_test.append(0)     
+        else:
+            rs1_test.append(2**(32) - 2**(16))
+            rs2_test.append(0) 
+       
+        rs1_test.append(2**8)
+        rs2_test.append(0)   
+    
+    elif(instr_name == 'ctzw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append(0)                
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)    
+
+        rs1_test.append(2**(64) - 2**(35))
+        rs2_test.append(0)     
+        
+        rs1_test.append(2**(64) - 2**(28))
+        rs2_test.append(0)   
+
+    elif(instr_name == 'max'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)                
+
+        rs1_test.append(-1)
+        rs2_test.append(200)    
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append(-1)     
+        
+        rs1_test.append(-1)
+        rs2_test.append((2**(XLEN-1))-1)   
+
+    elif(instr_name == 'min'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)                
+
+        rs1_test.append(-1)
+        rs2_test.append(200)    
+
+        rs1_test.append(-(2**(XLEN-1)))
+        rs2_test.append(-1)     
+        
+        rs1_test.append(-1)
+        rs2_test.append((2**(XLEN-1))-1)   
+
+    elif(instr_name == 'maxu'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append((2**XLEN)-1)          
+
+        rs1_test.append(2**(XLEN-1))   
+        rs2_test.append((2**XLEN)-1)    
+
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append(1)     
+        
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)   
+
+    elif(instr_name == 'minu'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)
+        rs2_test.append((2**XLEN)-1)          
+
+        rs1_test.append(2**(XLEN-1))   
+        rs2_test.append((2**XLEN)-1)    
+
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append(1)     
+        
+        rs1_test.append((2**(XLEN-1)))
+        rs2_test.append((2**(XLEN-1))-1)  
+    
+    elif(instr_name == 'orcb'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 2**(XLEN - 17))
+        rs2_test.append(48)       
+
+        rs1_test.append(2**(XLEN-9) + 2**(XLEN - 25))
+        rs2_test.append(35)
+
+        if(XLEN == 64):
+            # rs1_test.append(2**(64) - 1)
+            rs1_test.append(2**(XLEN-33) + 2**(XLEN - 49))
+            rs2_test.append(10)
+
+            # rs1_test.append(2**(XLEN-41)+ 2**(XLEN - 57))
+            rs1_test.append(0)
+            rs2_test.append(10)
+
+        else: 
+            rs1_test.append(0)
+            rs2_test.append(10)
+
+            rs1_test.append(2**(32) - 1)
+            rs2_test.append(10)
+
+    elif(instr_name == 'orn'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)       
+        rs2_test.append(2**(XLEN) - 2)
+
+        rs1_test.append(1)
+        rs2_test.append(0)
+
+        rs1_test.append(0)
+        rs2_test.append(1)
+
+        rs1_test.append(64)
+        rs2_test.append(2**(XLEN) - 1)
+
+    elif(instr_name == 'rev8'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(0)       
+        rs2_test.append(0)
+
+        rs1_test.append(2**(XLEN) - 1)
+        rs2_test.append(0)
+
+        if(XLEN == 64):
+            rs1_test.append(2**(64) - 2**(32))
+            rs2_test.append(0)
+        else:
+            rs1_test.append(2**(32) - 2**(16))
+            rs2_test.append(0) 
+
+        rs1_test.append(2**(32) - 2**(24))
+        rs2_test.append(0)
+
+    elif(instr_name == 'rol'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 1)
+        rs2_test.append(3)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
+
+        rs1_test.append(2**(XLEN - 1))
+
+        if(XLEN == 64):
+            val = '00111000011'
+            rs2_test.append(int(val,2))            
+        else: 
+            val = '00111100011'
+            rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(0)  
+
+    elif(instr_name == 'rolw'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(33) - 2**(4))
+        rs2_test.append(3)                
+
+        rs1_test.append(1)
+        rs2_test.append(2**6 - 1)         
+
+        rs1_test.append(2**(31))
+        val = '00111100011'
+        rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(31))
+        rs2_test.append(0) 
+
+    elif(instr_name == 'ror'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 1)
+        rs2_test.append(3)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
+
+        rs1_test.append(2**(XLEN - 1))
+
+        if(XLEN == 64):
+            val = '00111000011'
+            rs2_test.append(int(val,2))            
+        else: 
+            val = '00111100011'
+            rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(0)   
+
+    elif(instr_name == 'rori'):
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(XLEN-1) + 1)
+        rs2_test.append(3)                
+
+        rs1_test.append(2**(XLEN - 1))
+        rs2_test.append(2**7 - 1)         # Checking if only log(XLEN) bits are being considered 
+
+        rs1_test.append(2**(XLEN-1) + 2**(XLEN - 17))
+        rs2_test.append(0)            
+
+        rs1_test.append(1)
+        rs2_test.append(0) 
+
+    elif(instr_name == 'rorw'): 
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(33) - 2**(4))
+        rs2_test.append(5)                
+
+        rs1_test.append(1)
+        rs2_test.append(2**6 - 1)         
+        
+        rs1_test.append(2**(33) - 2**(4))
+        val = '00111100011'
+        rs2_test.append(int(val,2))   
+
+        rs1_test.append(2**(31))
+        rs2_test.append(0) 
+
+    elif(instr_name == 'roriw'): 
+
+        rs1_test = []
+        rs2_test = []
+
+        rs1_test.append(2**(45) - 2**(4))
+        rs2_test.append(5)                
+
+        rs1_test.append(2**(32) - 2)
+        rs2_test.append(6)         
+        
+        rs1_test.append(2**(30) - 1)
+        rs2_test.append(7)    
+
+        rs1_test.append(1)
+        rs2_test.append(8) 
+
     for i in range (num_of_tests):
-        #rs1 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
-        #rs2 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
-        rs1 = random.randint(0,(2**XLEN)-1) 
-        rs2 = random.randint(0,(2**XLEN)-1)
+        if((instr_name == 'max') | (instr_name == 'min')):
+            rs1 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
+            rs2 = random.randint(-(2**(XLEN-1)),(2**(XLEN-1))-1) 
+        else:
+            rs1 = random.randint(0,(2**XLEN)-1) 
+            rs2 = random.randint(0,(2**XLEN)-1)
+
+        if(i > 9):
+
+            # Test vectors for add.uw 
+            # 1) Checks zero extension of rs1
+            rs1 = rs1_test[i - 10]
+            rs2 = rs2_test[i - 10]
 
         # if(i > 9):
 
@@ -647,6 +1090,6 @@ elif base == 'RV64':
     ##To run multiple instr - tf.add_option(((('instr','instr_name','single_opd'), [(1, 'addn', 0),(2,'clz',1),(...)])
 
 #for each instruction below line generates 10 test vectors, can change to different no.
-tf.add_option('num_of_tests',[10])
+tf.add_option('num_of_tests',[14])
 tf.generate_tests()
 
