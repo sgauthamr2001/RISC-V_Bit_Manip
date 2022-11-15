@@ -52,13 +52,11 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 2, andn
     elif ((ip1 == '0100000') & (ip4 == '111') & (ip6 == '0110011')):
-        print("Testing instruction andn")
         res = rs1 & ~rs2
         valid = '1'
 
     # 3, blcr
     elif ((ip1 == '0100100') & (ip4 == '001') & (ip6 == '0110011')):
-        print("Testing instruction bclr")
         res = (rs1 & ~(1 << (rs2 & (XLEN - 1))))
         valid = '1'
 
@@ -196,7 +194,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 16, cpop
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00010')):    
-        print("Testing instruction cpop")
         res = 0
         i = 0
         while(i < XLEN):
@@ -207,7 +204,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 17, cpopw
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0011011') & (ip2 == '00010')): 
-        print("Testing instruction cpopw")
         if(XLEN == 64):
             res = 0 
             i = 0
@@ -219,7 +215,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 18, ctz
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0010011') & (ip2 == '00001')): 
-        print("Testing instruction ctz")
+
         res = 0
         i = 0
         for i in range(XLEN):
@@ -230,7 +226,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 19, ctzw
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0011011') & (ip2 == '00001')):
-        print("Testing instruction ctzw")
         if(XLEN == 64):
             res = 0
             i = 0
@@ -242,7 +237,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 20, max 
     elif ((ip1 == '0000101') & (ip4 == '110') & (ip6 == '0110011')):
-        print("Testing instruction max")
         if(rs1 > rs2):
             res = rs1 
         else: 
@@ -251,7 +245,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 21, maxu
     elif ((ip1 == '0000101') & (ip4 == '111') & (ip6 == '0110011')):
-        print("Testing instruction maxu")
         if(rs1 > rs2):
             res = rs1 
         else: 
@@ -260,7 +253,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     
     # 22, min
     elif ((ip1 == '0000101') & (ip4 == '100') & (ip6 == '0110011')):
-        print("Testing instruction min")
         if(rs1 < rs2):
             res = rs1 
         else: 
@@ -269,7 +261,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 23, minu
     elif ((ip1 == '0000101') & (ip4 == '101') & (ip6 == '0110011')):
-        print("Testing instruction minu")
         if(rs1 < rs2):
             res = rs1 
         else: 
@@ -278,7 +269,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 24, orcb
     elif ((ip1 == '0010100') & (ip4 == '101') & (ip6 == '0010011') & (ip2 == '00111')):
-        print("Testing instruction orcb")
         res = 0
         for i in range(int(XLEN/8)):
             if(rs1 & 255 != 0): 
@@ -288,7 +278,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 25, orn
     elif ((ip1 == '0100000') & (ip4 == '110') & (ip6 == '0110011')):
-        print("Testing instruction orn")
         res = rs1 | ~rs2
         valid = '1'
 
@@ -300,7 +289,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
             num_bytes = int(XLEN/8)
             for i in range(num_bytes):
                 res += (rs1 & 255) << (8 * (num_bytes - i - 1))
-                rs1 = rs1 >> 8
+                rs1 = rs1 >> 8 
             valid = '1'
         if((XLEN == 64) & (ip1[-1] == '1')): 
             res = 0 
@@ -312,7 +301,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 27, rol
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0110011')):
-        print("Testing instruction rol")
         res = 0 
         if(XLEN == 32): 
             shamt = rs2 & 31
@@ -325,7 +313,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     # 28, rolw
     elif ((ip1 == '0110000') & (ip4 == '001') & (ip6 == '0111011')):
         if(XLEN == 64):
-            print("Testing instruction rolw")
             shamt = rs2 & 31
             rs1 = rs1 & (4294967295)
             res = (rs1 << shamt) | ((rs1) >> (32 - shamt))
@@ -335,7 +322,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
 
     # 29, ror
     elif ((ip1 == '0110000') & (ip4 == '101') & (ip6 == '0110011')): 
-        print("Testing instruction ror")
         res = 0 
         if(XLEN == 32): 
             shamt = rs2 & 31
@@ -379,7 +365,6 @@ def bbox_rm(instr, rs1, rs2, XLEN):
     # 32, rorw
     elif ((ip1 == '0110000') & (ip4 == '101') & (ip6 == '0111011')): 
         if(XLEN == 64):
-            print("Testing instruction rorw")
             shamt = rs2 & 31
             rs1 = rs1 & (4294967295)
             res = (rs1 >> shamt) | ((rs1) << (32 - shamt))
@@ -410,6 +395,7 @@ def bbox_rm(instr, rs1, rs2, XLEN):
         else:
             res = (2**(XLEN) - 2**16) + byteval
             valid = '1'
+
 
     # 35, sh1add
     elif ((ip1 == '0010000') & (ip4 == '010') & (ip6 == '0110011')): 
