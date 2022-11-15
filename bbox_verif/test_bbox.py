@@ -474,7 +474,7 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
         ctests.append((2**64-1,0))
         ctests.append((2**64-2**32,0))
         ctests.append((2**32-1,0))
-        ctests.append((2**64-2**32+1))
+        ctests.append((2**64-2**32+1,0))
 
     for test in ctests:
         rs1 = test[0]
@@ -515,7 +515,7 @@ async def TB(dut, XLEN, instr, instr_name, single_opd, num_of_tests):
 # generates sets of tests based on the different permutations of the possible arguments to the test function
 tf = TestFactory(TB)
 
-base = 'RV32'
+base = 'RV64'
 #To run tests for RV32, change base = 'RV32'
 
 #generates tests for instructions of RV32
