@@ -4,7 +4,7 @@ This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/
 
 ### Bit-Manipulation Extensions
 
-<div align="justify"> The bit manipulation extension comprises of several extensions to the conventional RISC-V architecture, which enables to reduce the code size (each instruction needs to be written using several RV32/64 instructions), also provide improvement on terms of performance and energy. Bit manipulation involves performing operations like shifting, counting etc. on the bits to obtain information or transform them to some apllication usable format. A wide range of applications are benefitted including error control codes, data compression to address generation for memory accesses. Through this project the RISC-V Bit Manipulation Extension (both RV32/64) has been implemented in Bluespec System Verilog and verified using Python3 (cocotb) in accordance to the specification document. There are four sets of extensions freezed by RISC-V international which have been implemented and they include:  </div>
+<div align="justify"> The bit manipulation extension comprises of several extensions to the conventional RISC-V architecture, which enables to reduce the code size (each instruction needs to be written using several RV32/64 instructions), also provide improvement on terms of performance and energy. Bit manipulation involves performing operations like shifting, counting etc. on the bits to obtain information or transform them to some application usable format. A wide range of applications are benefitted including error control codes, data compression to address generation for memory accesses. Through this project the RISC-V Bit Manipulation Extension (both RV32/64) has been implemented in Bluespec System Verilog and verified using Python3 (cocotb) in accordance to the specification document. There are four sets of extensions freezed by RISC-V international which have been implemented and they include:  </div>
 
 - Zba, Extensions to accelerate address transalation for accessing basic array types.
 - Zbb, Extnesions to perform basic bit manipulation operations like logical with negate, counting, rotate etc. 
@@ -12,7 +12,7 @@ This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/
 - Zbs, Extensions to perform single-bit operations like bit clear, set etc. 
 
 ### The repo structure is as follows:
-- bbox.bsv - The top module of the design. Has the interface definition and module definition which calls the BitManip calculation.
+- bbox.bsv - The top module of the design. Has the interface definition and module definition which calls the BitManip computation.
 - Makefile - Has make commands to generate_verilog and simulate.
 - src/ - The directory where the files which the student should edit are present here. The files present are
 	- compute.bsv - The top function which selects between the functions implemented for the spec depending on the instruction.
@@ -39,8 +39,9 @@ This is forked repository of [BitManip Extension](https://gitlab.com/mindgrove1/
 
 
 ### Steps to run:
+
 <div align="justify"> Make sure you have installed all the required tools as mentioned in docs/Tool_setup.pdf and the python environment is activated. To add custom test instrucions, 
-the list corresponding to respective instruction in 'bbox_verif/test_bbox.py' is to be appended and more instructions have been provided inside the file. </div> 
+the list corresponding to respective instruction in 'bbox_verif/test_bbox.py' is to be appended and more details have been provided inside the file. Please make sure to change the BSCDEFINES to RV32 along with base in 'bbox_verif/test_bbox.py' to change the base. </div>
 
 1. To just generate the verilog
 ```bash
@@ -74,8 +75,22 @@ $ make clean_build
 	$ sudo apt install gtkwave
 ```    
 
+### Work Split-up: 
+- Bachotti Sai Krishna Shanmukh, EE19B009
+	- Implementation: Zbb (Sign-Extension), Zbs
+	- Verification: Zbs, Zbc, Zbb (Sign-Extension)
+	- Bluespec Integration
+- Niranjan J Nair, EE19B046
+	- Implementation: Zba, Zbc
+	- Verification: Zba, Zbc
+- Sai Gautham Ravipati, EE19B053
+	- Implementation: Zbb (except Sign-Extension) 
+	- Verification: Zbb (except Sign-Extension)
+	- Python3 testing set-up
+
 ### Test Results: 
 - The results obtained for both random and custom testcases for RV64 (55 instead of 43 as tested for different values of shamt): 
+
 ![image.png](./image.png)
 
 - The results obtained for both random and custom testcases for RV32 (36 instead of 32 as tested for different values of shamt): 
