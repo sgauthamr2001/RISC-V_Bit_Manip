@@ -6,8 +6,9 @@ Email id : mounakrishna@mindgrovetech.in
 Details: The top function which calls the required function depending 
          on the instruction.
 
-Edited by : Bachotti Sai Krishna Shanmukh EE19B009
-
+Edited by : Bachotti Sai Krishna Shanmukh, 
+            Sai Gautham Ravipati, 
+            Niranjan Nair 
 --------------------------------------------------------------------------------------------------
 */
 
@@ -21,7 +22,7 @@ import bbox_types :: *;
 /*********************/
 
 
-/* Edited by : Bachotti Sai Krishna Shanmukh ee19b009
+/* 
   fn_compute: is the TOP FUNCTION where depending on the instruction the 
   required function is called, result is computed and returned.
   The output of the function is 1b valid signal and XLEN width result
@@ -36,6 +37,7 @@ import bbox_types :: *;
   ifdef directive is used for some cases in the 'case ladder' if that instruction is defined only 
   for RV64 mode
 */
+
 function BBoxOutput fn_compute(BBoxInput inp);
   Bit#(XLEN) result;
   Bool valid;
@@ -81,7 +83,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
           result = fn_bclri(inp.rs1, inp.instr);
           valid = True;
         end
-        // if shamt[5] == 1 in RV32 then dont implement
+        // if shamt[5] == 1 in RV32 then don't implement
         else begin
           result = 0;
           valid = True;
@@ -433,6 +435,7 @@ function BBoxOutput fn_compute(BBoxInput inp);
       end
     `endif
     // default case 
+
     default: begin
       result = 0;
       valid = False;
