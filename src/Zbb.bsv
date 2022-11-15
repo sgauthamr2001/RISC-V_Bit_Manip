@@ -1,7 +1,7 @@
 //See LICENSE.iitm for license details
 /*
 
-Author : Sai Gautham Ravipati, Sai Krishna Shanmukh
+Author : Sai Gautham Ravipati, Bachotti Sai Krishna Shanmukh
 Email id : sai.gautham@smail.iitm.ac.in
 Details: Holds the functions to implement basic bit manupulation operations 
          like: 
@@ -16,7 +16,6 @@ Details: Holds the functions to implement basic bit manupulation operations
          methods like SignExtend, ZeroExtend and Counting have been used. 
 --------------------------------------------------------------------------------------------------
 */
-
 
 // Instruction: andn 
 // Function: The instruction performs the bitwise logical AND b/w rs1 and negated rs2.
